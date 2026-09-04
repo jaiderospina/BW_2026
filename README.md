@@ -17,3 +17,4 @@ Repositorio curso ***Banda Ancha  2026-2, Universidad Militar Nueva Granada.**
 - https://proyectoa.com/agregar-switch-router-cisco-c3725-a-proyecto-gns3-y-configuracion-inicial/
 - https://youtu.be/gWPcRmemD0g?si=rfQ-xZ87ogiuofM8
 - https://youtu.be/_Y7hNF86wes?si=MgKDE75eruLpvIro
+- https://espaciotecnologico.co/simular-un-firewall-fortigate-en-linux/
