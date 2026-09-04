@@ -1,6 +1,6 @@
 # Banda Ancha 
 
-Repositorio curso ***Banda Ancha**  2026-2, universidad Militar Nueva Granada.
+Repositorio curso ***Banda Ancha  2026-2, Universidad Militar Nueva Granada.**
 
 
 
