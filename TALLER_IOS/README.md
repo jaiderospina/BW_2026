@@ -17,3 +17,5 @@ Se entiende como "README" enriquecido aquel que incluya imágenes, entradas de c
 * Tanto la app de GNS3 como la MV deben coincidir en su versión.
 * Una vez creada la máquina, garantizar que esta suba antes de iniciar GNS3.
 * Hacer uso del *wizard* de GNS3 en caso de requerir reconfigurar la conexión entre GNS3 y la MV GNS3.
+
+- https://drive.usercontent.google.com/download?id=1u_mfe-0BC4oSoqIR5OQFHOrmxNw9fltG&export=download&authuser=0
