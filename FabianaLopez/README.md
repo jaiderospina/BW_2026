@@ -39,6 +39,8 @@ Implementar el despliegue y la vinculación exitosa de la máquina virtual **GNS
 
 
 *Figura 1: Pantalla principal de la GNS3 VM en VMware mostrando la versión y la dirección IP asignada.*
+<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/fc370f42-b431-474f-8ce8-d477bbb41081" />
+
 
 ### Paso 2: Configuración del Servidor Local y Vinculación en GNS3
 
@@ -64,6 +66,10 @@ Implementar el despliegue y la vinculación exitosa de la máquina virtual **GNS
 
 
 *Figura 2: Panel Servers Summary con el servidor local y la GNS3 VM en estado activo (verde).*
+<img width="1919" height="827" alt="image" src="https://github.com/user-attachments/assets/8cf07722-c2e1-489e-a3da-202d0620dc6e" />
+
+<img width="367" height="144" alt="image" src="https://github.com/user-attachments/assets/35b4eea5-5395-4367-837f-35d5211468b1" />
+
 
 ### Paso 3: Importación y Creación del Template Router Cisco C3725
 
