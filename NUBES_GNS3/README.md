@@ -4,6 +4,7 @@ Este manual describe el procedimiento para proporcionar conectividad de red y sa
 
 ---
 
+
 ## 1. Fundamentos: Tipos de Red Virtual en VMware Workstation
 
 Para comprender el comportamiento de los laboratorios en GNS3, es indispensable diferenciar los tres tipos de conmutadores virtuales estándar que administra VMware:
@@ -74,6 +75,11 @@ R1# ping 192.168.1.1
 ## 3. Método B: Conexión mediante Nodo NAT (Recomendado para Wi-Fi y Salida Rápida)
 
 El nodo **NAT** conecta el entorno de GNS3 a la interfaz `VMnet8` de VMware. No requiere modificar conmutadores físicos ni depende de la compatibilidad de la tarjeta inalámbrica.
+
+![](IMAGES/NAT.png)
+
+
+![](IMAGES/NAT_config.png)
 
 ### Fase B.1: Verificación del adaptador NAT en la GNS3 VM
 
