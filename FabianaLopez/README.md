@@ -81,6 +81,9 @@ Implementar el despliegue y la vinculación exitosa de la máquina virtual **GNS
 
 3. Se cargó la imagen del router Cisco C3725 y se autorizó su descompresión.
 
+<img width="948" height="789" alt="image" src="https://github.com/user-attachments/assets/244d9f0b-6115-40e3-8cbb-e903329acbdf" />
+
+
 4. Se asignaron los parámetros recomendados de memoria RAM y slots.
 
 5. Se ejecutó el cálculo del **Idle-PC finder** para evitar el uso excesivo del procesador (CPU) del equipo host durante la ejecución del IOS.
@@ -98,6 +101,9 @@ Implementar el despliegue y la vinculación exitosa de la máquina virtual **GNS
 
 
 *Figura 4: Topología con el nodo C3725 activo ejecutándose sobre la máquina virtual.*
+
+<img width="940" height="551" alt="image" src="https://github.com/user-attachments/assets/b2c7ae27-6a6d-483d-8e1d-41a895b76a2b" />
+
 
 ## 💻 Entradas y Comandos de Consola
 
@@ -130,6 +136,9 @@ FastEthernet0/0            unassigned      YES unset  administratively down down
 FastEthernet0/1            unassigned      YES unset  administratively down down
 
 ```
+
+<img width="889" height="621" alt="image" src="https://github.com/user-attachments/assets/09412a72-de63-4f95-a136-f284dfc64dfa" />
+
 
 ## 📌 Recomendaciones Cumplidas
 
