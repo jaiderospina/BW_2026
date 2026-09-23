@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="230" viewBox="0 0 960 230" role="img" aria-labelledby="title desc">
+  <title id="title">Arquitectura de C3725 sobre GNS3 VM</title>
+  <desc id="desc">El cliente GNS3 administra el router C3725, que corre con Dynamips dentro de la GNS3 VM.</desc>
+  <rect width="960" height="230" rx="18" fill="#f4f7fb"/>
+  <rect x="32" y="50" width="240" height="130" rx="14" fill="#ffffff" stroke="#31649d" stroke-width="3"/>
+  <text x="152" y="101" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="bold" fill="#193452">Cliente GNS3</text>
+  <text x="152" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#485d73">Interfaz y proyecto</text>
+  <line x1="273" y1="115" x2="370" y2="115" stroke="#31649d" stroke-width="4"/>
+  <polygon points="370,115 354,106 354,124" fill="#31649d"/>
+  <rect x="372" y="28" width="556" height="174" rx="16" fill="#e8f1fc" stroke="#31649d" stroke-width="3"/>
+  <text x="650" y="68" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="bold" fill="#193452">GNS3 VM</text>
+  <rect x="418" y="86" width="464" height="92" rx="12" fill="#ffffff" stroke="#4d8c70" stroke-width="3"/>
+  <text x="650" y="123" text-anchor="middle" font-family="Arial, sans-serif" font-size="21" font-weight="bold" fill="#24553f">Router Cisco C3725</text>
+  <text x="650" y="151" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#485d73">Imagen IOS ejecutada con Dynamips</text>
+</svg>
