@@ -91,3 +91,8 @@ Al finalizar este procedimiento, el appliance FortiGate queda completamente func
 - Si el servidor de la VM no aparece en verde, revisar que la virtualización anidada esté habilitada y que no haya conflictos con otros hipervisores (por ejemplo, Hyper-V o VirtualBox activos simultáneamente).
 - Si el Online Registry no muestra la imagen esperada, verificar la conexión a internet del host y refrescar el catálogo manualmente.
 - Los recursos asignados a la GNS3 VM en VMware (RAM/CPU) deben ser suficientes para soportar el appliance FortiGate, que suele requerir más recursos que dispositivos de red convencionales.
+
+
+
+
+https://ai.studio/apps/1ab19d29-c25a-4db0-9271-afb8e3385530
