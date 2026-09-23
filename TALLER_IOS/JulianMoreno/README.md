@@ -1,84 +1,63 @@
-# Taller en clase: C3725 en la GNS3 VM
+# Taller en clase: router C3725 sobre la GNS3 VM
 
 **Estudiante:** Julián Camilo Moreno Valderrama
 
-## Objetivo
+**Propósito:** crear un template de router C3725 que se ejecute en la **GNS3 VM** y no en el servidor local.
 
-Crear un template de router Cisco C3725 y ejecutarlo en la **GNS3 VM**, no en el servidor local. Esta práctica deja preparada la MV para trabajar después con appliances como FortiGate.
+## 1. Verificar GNS3 y la máquina virtual
 
-![El cliente administra el C3725 que se ejecuta dentro de la GNS3 VM](img/arquitectura.svg)
+Usé GNS3 con VMware Workstation. En mi equipo, la GNS3 VM se inicia automáticamente al abrir GNS3 y el proyecto. Esperé a que estuviera conectada antes de iniciar el router.
 
-## 1. Preparación del entorno
+La aplicación GNS3 y el servidor de la MV muestran la misma versión: **2.2.61**.
 
-Usé GNS3 y VMware Workstation. Al abrir GNS3 y el proyecto, la GNS3 VM `Juli11` se inicia automáticamente. Antes de poner en marcha el router, comprobé que la MV estuviera encendida y conectada. Si la conexión falla, se puede revisar en **Help → Setup Wizard**.
+![Versión 2.2.61 de la aplicación GNS3](img/02-version-cliente-gns3.png)
 
-El cliente GNS3 muestra la versión **2.2.61**:
+![GNS3 VM encendida con el servidor en versión 2.2.61](img/01-gns3-vm-encendida.png)
 
-![Versión del cliente GNS3](img/02-version-cliente-gns3.png)
+## 2. Crear el template C3725
 
-En VMware, la pantalla de la MV muestra **GNS3 server version: 2.2.61**. Por tanto, cliente y servidor coinciden. La línea **VM version: 0.21.0** identifica una versión distinta del sistema de la MV.
+1. Descargué la imagen IOS **c3725-adventerprisek9-mz.124-15.T14.image**.
+2. En GNS3 entré a **Edit → Preferences → Dynamips → IOS routers → New** e importé la imagen.
+3. Seleccioné la **GNS3 VM** como servidor, confirmé el modelo **c3725** y guardé el template como **Cisco 3725 124-15.T14**.
 
-![GNS3 VM encendida y versión del servidor](img/01-gns3-vm-encendida.png)
+Esta captura muestra que el template quedó asociado a **GNS3 VM (Juli11)** y no al servidor local:
 
-## 2. Creación del template C3725
+![Template C3725 asociado a la GNS3 VM](img/03-servidor-template.png)
 
-1. Descargué la imagen IOS `c3725-adventerprisek9-mz.124-15.T14.image` para esta práctica.
-2. En GNS3 abrí **Edit → Preferences → Dynamips → IOS routers → New** e importé esa imagen.
-3. Seleccioné **GNS3 VM** como servidor del template y confirmé la plataforma **c3725**. La ventana de propiedades muestra ambos datos; el template se llama `Cisco 3725 124-15.T14`.
+Configuré **256 MiB de RAM** para la imagen utilizada:
 
-![Propiedades del template: servidor GNS3 VM, plataforma e imagen IOS](img/03-servidor-template.png)
+![Memoria configurada en el template C3725](img/04-configuracion-ram.png)
 
-4. Configuré **256 MiB de RAM**, cantidad indicada para esta versión de IOS, y el adaptador base `GT96100-FE`. El valor Idle-PC quedó en `0x60c09aa0` para reducir el consumo de CPU.
+Por último, comprobé que el router apareciera en la lista de dispositivos de GNS3:
 
-![Memoria configurada para el C3725](img/04-configuracion-ram.png)
+![C3725 disponible en GNS3](img/04-template-c3725.png)
 
-5. Guardé el template y comprobé que apareciera entre los routers disponibles.
+## 3. Probar el router
 
-![Template Cisco 3725 en la lista de dispositivos](img/04-template-c3725.png)
+Creé el proyecto **Taller_C3725_JulianMoreno**, añadí el router **R1** y lo inicié. En la topología se observa encendido y con la GNS3 VM conectada.
 
-## 3. Prueba de funcionamiento
+![Router R1 encendido en el proyecto](img/05-router-en-vm.png)
 
-Creé el proyecto `Taller_C3725_JulianMoreno`, añadí el router `R1` y lo inicié. El indicador verde confirma que está encendido. En la configuración del proyecto, `R1` está asignado a la GNS3 VM.
+Abrí la consola de **R1** y ejecuté:
 
-![Proyecto de prueba con el C3725 encendido y la GNS3 VM conectada](img/05-router-en-vm.png)
-
-En la consola ejecuté:
-
-```text
+~~~text
 R1#show version
-```
+~~~
 
-La salida identifica el modelo **Cisco 3725** y el IOS **12.4(15)T14**. También informa dos interfaces FastEthernet y aproximadamente 256 MB de memoria.
+La salida confirma **Cisco 3725** e **IOS 12.4(15)T14**.
 
-![Consola del C3725 con el resultado de show version](img/06-consola-ios-version.png)
+![Consola con el resultado de show version](img/06-consola-ios-version.png)
 
-Después comprobé las interfaces:
+También comprobé las interfaces:
 
-```text
+~~~text
 R1#show ip interface brief
-Interface              IP-Address      OK? Method Status                Protocol
-FastEthernet0/0        unassigned      YES unset  administratively down down
-FastEthernet0/1        unassigned      YES unset  administratively down down
-R1#
-```
+~~~
 
-Las interfaces aparecen sin IP y administrativamente deshabilitadas porque todavía no se configuró una red. Esto no impide comprobar que el IOS arrancó y que el router está disponible.
+Las dos interfaces aparecen sin dirección IP porque todavía no se ha configurado una red.
 
-![Consola con el resultado de show ip interface brief](img/07-consola-interfaces.png)
+![Consola con las interfaces del C3725](img/07-consola-interfaces.png)
 
 ## Resultado
 
-| Comprobación | Evidencia |
-| --- | --- |
-| Cliente y servidor GNS3 en versión 2.2.61 | Capturas de **About** y de la GNS3 VM |
-| Template C3725 alojado en la GNS3 VM | Propiedades del template y proyecto |
-| Imagen IOS 12.4(15)T14, RAM de 256 MiB | Propiedades y `show version` |
-| Router `R1` encendido | Topología y consola |
-| Dos interfaces FastEthernet detectadas | `show ip interface brief` |
-
-**Nota:** el archivo de FortiGate proporcionado para la práctica posterior no se utilizó para crear este router. La imagen IOS se empleó en GNS3 y no se incluye en el repositorio.
-
-## Referencias
-
-- [GNS3: configuración con la GNS3 VM](https://docs.gns3.com/docs/getting-started/setup-wizard-gns3-vm)
-- [GNS3: imágenes IOS para Dynamips y requisitos del C3725](https://docs.gns3.com/docs/emulators/cisco-ios-images-for-dynamips#c3725)
+El template **C3725** quedó creado sobre la **GNS3 VM**. El router inició correctamente y respondió a los comandos de verificación. Con ello, la MV queda disponible para prácticas posteriores con appliances como FortiGate.
