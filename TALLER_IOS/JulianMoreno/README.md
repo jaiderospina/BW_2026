@@ -34,7 +34,7 @@ Por último, comprobé que el router apareciera en la lista de dispositivos de G
 
 ## 3. Probar el router
 
-Creé el proyecto **Taller_C3725_JulianMoreno**, añadí el router **R1** y lo inicié. En la topología se observa encendido y con la GNS3 VM conectada.
+Creé el proyecto **Taller_C3725_JulianMoreno**, añadí el router **R1** y lo inicié. En la topología se observa el router encendido y la GNS3 VM conectada.
 
 ![Router R1 encendido en el proyecto](img/05-router-en-vm.png)
 
