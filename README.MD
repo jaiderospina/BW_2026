@@ -1,3 +1,7 @@
+## Imagén FORTINET
+
+- https://drive.google.com/file/d/10jYYB7cFszuKJXawu8j3WTO_sjnfVLp6/view?usp=sharing
+
 # Despliegue de FortiGate en GNS3 integrado con VMware Workstation
 
 Procedimiento documentado para la clase de Banda Ancha, en el que se integra **GNS3** con **VMware Workstation** como virtualizador, con el fin de importar y ejecutar un appliance **FortiGate** dentro del entorno de simulación.
