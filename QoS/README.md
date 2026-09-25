@@ -15,8 +15,7 @@ La Calidad de Servicio (QoS) es un conjunto de tecnologías y mecanismos diseña
 
 - **Capa 2 (Data Link):** Es donde opera CoS (Class of Service) mediante el estándar IEEE 802.1p. La prioridad se maneja solo dentro de la red local (LAN) usando marcos de Ethernet.
 
-
-
+CAPA2.png
 
 ------------------------------
 ## 1. El Flujo de Trabajo de QoS (Paso a Paso)
@@ -98,3 +97,4 @@ Imagina una oficina con un enlace de internet de 100 Mbps donde conviven tres ac
 - REFERENCIAS:
 
 -  https://kodiakk.hashnode.dev/qos-que-es-por-que-tecnica-de-marcado-y-dscp
+-  https://community.cisco.com/t5/blogs-routing-y-switching/fundamentos-de-qos-calidad-de-servicio-en-capa-2-y-capa-3/ba-p/3103715
