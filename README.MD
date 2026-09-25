@@ -101,4 +101,4 @@ Al finalizar este procedimiento, el appliance FortiGate queda completamente func
 
 https://ai.studio/apps/1ab19d29-c25a-4db0-9271-afb8e3385530
 - https://opentextbc.ca/fortigatefirewall/chapter/basic-settings/
-- 
+- https://youtu.be/OvuHbiew7Uo?si=gMo7wDcJ1bQ4K0Ta
