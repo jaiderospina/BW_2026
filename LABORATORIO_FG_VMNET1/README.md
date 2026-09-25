@@ -1,7 +1,9 @@
-
+# Laboratorio básico sobre VMWARE
 
 Ejercicio en clase donde los dispositivos del laboratorio (como máquinas virtuales adicionales, servidores o el propio anfitrión) se encuentran vinculados a **VMnet1** (`192.168.85.0/24`), la topología debe modificarse para que el FortiGate actúe como enrutador/firewall entre esa red existente y el nodo Webterm, o bien integrarse directamente con ella y utilizar la nube NAT de GNS3 para la salida al exterior.
 
+
+![](topologia.png)
 
 ---
 
