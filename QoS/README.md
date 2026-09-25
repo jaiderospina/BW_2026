@@ -15,7 +15,7 @@ La Calidad de Servicio (QoS) es un conjunto de tecnologías y mecanismos diseña
 
 - **Capa 2 (Data Link):** Es donde opera CoS (Class of Service) mediante el estándar IEEE 802.1p. La prioridad se maneja solo dentro de la red local (LAN) usando marcos de Ethernet.
 
-CAPA2.png
+![](CAPA2.png)
 
 ------------------------------
 ## 1. El Flujo de Trabajo de QoS (Paso a Paso)
