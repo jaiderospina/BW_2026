@@ -14,11 +14,26 @@
 
 ---
 
+
+# Justificación y Encuadre Profesional
+
+En las infraestructuras de telecomunicaciones contemporáneas, el concepto de redes de banda ancha ha trascendido el mero transporte masivo de paquetes capa 3. La convergencia exige control perimetral unificado, gestión determinista del tráfico y orquestación inteligente de enlaces híbridos (Internet de alta velocidad, MPLS, satelital y 5G).
+
+- El ecosistema FortiGate (FortiOS) representa una de las plataformas líderes de la industria en el despliegue de soluciones Next-Generation Firewall (NGFW) y Secure SD-WAN. La presente actividad busca que el estudiante no interactúe con el dispositivo como un simple operador de comandos, sino como un arquitecto de soluciones de red y seguridad, con capacidad de:
+
+- Auditar y parametrizar interfaces, zonas y políticas de seguridad perimetral.
+
+- Dimensionar y configurar la capa de transporte seguro mediante túneles VPN (IPsec IKEv2 y SSL-VPN).
+
+- Modelar arquitecturas SD-WAN para priorización, medición de calidad de enlace (SLA) y balanceo inteligente del ancho de banda.
+
+
 ## 1. Contextualización y Propósito de la Práctica
 
-El desarrollo de las redes de banda ancha modernas demanda que los ingenieros reconozcan de inmediato la correlación entre las interfaces de configuración de dispositivos comerciales y los principios de transporte, enrutamiento avanzado, disponibilidad y cifrado de datos.
+El desarrollo de las redes de banda ancha modernas demanda reconocer la correlación entre las interfaces de configuración de dispositivos comerciales y los principios de transporte, enrutamiento avanzado, disponibilidad y cifrado de datos.
 
-La presente práctica plantea un reconocimiento exhaustivo y estructurado de la interfaz web gráfica (GUI) de la máquina virtual FortiGate desplegada en GNS3. El estudiante debe contrastar cada módulo administrativo con la teoría de redes de banda ancha, capturar la evidencia visual correspondiente y redactar una síntesis técnica rigurosa en el `README.md` de su repositorio.
+La presente práctica plantea un reconocimiento exhaustivo y estructurado de la interfaz web gráfica (GUI) de la máquina virtual FortiGate desplegada en GNS3. 
+El estudiante debe contrastar cada módulo administrativo con la teoría de redes de banda ancha, capturar la evidencia visual correspondiente y redactar una síntesis técnica rigurosa en el `README.md` de su repositorio.
 
 ---
 
@@ -32,11 +47,13 @@ Exploración individual.
 
 Cada estudiante debe acceder a su entorno en GNS3 vía navegador web (`https://<IP_FortiGate>`) y navegar sistemáticamente por todas las interfaces; entre otras:
 
-
+![](FIG1.png)
 
 ### Conectividad y Transporte Seguro (VPN)
 
 * **IPsec Wizard / Custom IPsec:**
+
+  ![](wizard.png)
 * *Ruta en GUI:* `VPN > IPsec Tunnels > Create New`.
 * *Exploración:* Navegar entre el asistente predefinido (*IPsec Wizard: Site to Site, Hub-and-Spoke, Remote Access*) y la opción de túnel personalizado (*Custom*).
 * *Investigación y encuadre:* Identificar la función de la Fase 1 (establecimiento de canal seguro IKE, Diffie-Hellman) y Fase 2 (selectores de tráfico de red local y remota, encapsulación ESP). Explicar por qué el cifrado IPsec es indispensable para interconectar sedes sobre enlaces de banda ancha compartidos de Internet.
@@ -50,6 +67,8 @@ Cada estudiante debe acceder a su entorno en GNS3 vía navegador web (`https://<
 
 
 ### Orquestación y Resiliencia de Enlaces (SD-WAN)
+
+![](protocols.png)
 
 * **SD-WAN Zones y Member Interfaces:**
 * *Ruta en GUI:* `Network > SD-WAN > SD-WAN Zones`.
