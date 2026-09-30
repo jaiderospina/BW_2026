@@ -176,6 +176,80 @@ route -p add 192.168.10.0 mask 255.255.255.0 192.168.142.2
 
 ## 9. Acceso a la interfaz gráfica
 
-Desde el navegador de Webterm se ingresó a `http://192.168.10.1`. Después de iniciar sesión se mostró el panel principal del FortiGate, confirmando que la administración web estaba disponible.
+Desde el navegador de Webterm se ingresó a `http://192.168.10.1`. Después de iniciar sesión se mostró el panel principal del FortiGate, confirmando que la administración web estaba disponible. Para entrar a la interfaz se usa el usuario `admin` y la contraseña definida durante la primera configuración del equipo.
 
 ![Interfaz gráfica del FortiGate](img/10-interfaz-grafica-fortigate.png)
+
+## 10. Comandos de referencia
+
+Esta sección reúne los comandos empleados durante la práctica. Los bloques están separados según la consola donde se ejecutan.
+
+### En Webterm
+
+Solicitar dirección IP al servidor DHCP del FortiGate:
+
+```bash
+/gns3/bin/busybox udhcpc -i eth0 -s /gns3/etc/udhcpc/default.script -q -n
+```
+
+Consultar la dirección asignada y la puerta de enlace:
+
+```bash
+ip -4 addr show eth0
+ip route
+```
+
+Probar la red local, el acceso a Internet y la resolución de nombres:
+
+```bash
+ping -c 4 192.168.10.1
+ping -c 4 192.168.142.2
+ping -c 4 8.8.8.8
+ping -4 -c 4 google.com
+```
+
+### En la consola del FortiGate
+
+Ver el estado y las direcciones de las interfaces:
+
+```text
+get system interface physical
+show system interface
+```
+
+Ver el servidor DHCP y las políticas guardadas:
+
+```text
+show system dhcp server
+show firewall policy
+```
+
+Probar conectividad desde el FortiGate:
+
+```text
+execute ping 8.8.8.8
+execute ping 192.168.142.1
+```
+
+### En Windows
+
+Agregar una ruta persistente hacia la red de Webterm. Ejecutar la consola como administrador:
+
+```cmd
+route -p add 192.168.10.0 mask 255.255.255.0 192.168.142.2
+```
+
+Consultar la tabla de rutas o eliminar esta ruta si ya no se necesita:
+
+```cmd
+route print
+route delete 192.168.10.0
+```
+
+### Abrir la administración web
+
+En el navegador de Webterm, abrir:
+
+```text
+http://192.168.10.1
+```
