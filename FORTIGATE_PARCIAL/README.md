@@ -180,3 +180,5 @@ La calificación se otorgará de forma inmediata durante la sesión mediante el 
 | **Completitud de Evidencias (Pantallazos)** | 20 % | Todas las capturas solicitadas corresponden a la instancia personal del estudiante en GNS3 (verificable por hostname o direccionamiento asignado). |
 | **Rigor Conceptual y Encuadre en Banda Ancha** | 20 % | Las explicaciones articulan la funcionalidad del software con conceptos teóricos de la asignatura (latencia, jitter, MTU, ancho de banda, SLAs, encapsulación). |
 | **QUIZ escrito**| 60 % |
+
+# NOTA:  Dentro de esta misma carpeta generar carpeta con el nombre del estudiante siguiendo la nomenclatura Nombre_Apellido. 
