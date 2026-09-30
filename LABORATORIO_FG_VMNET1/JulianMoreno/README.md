@@ -253,3 +253,16 @@ En el navegador de Webterm, abrir:
 ```text
 http://192.168.10.1
 ```
+
+## 11. Problemas frecuentes y soluciones
+
+| Problema | Causa posible | Solución |
+| --- | --- | --- |
+| Webterm no recibe una dirección IP | No se inició el cliente DHCP o el servidor no está habilitado en `port2`. | En Webterm ejecutar `/gns3/bin/busybox udhcpc -i eth0 -s /gns3/etc/udhcpc/default.script -q -n`. En FortiGate revisar `show system dhcp server` y confirmar que el servidor está activo en `port2`. |
+| `ifup -a -f` indica que no encuentra un cliente DHCP | La imagen de Webterm no incluye `dhclient`; utiliza `udhcpc` de BusyBox. | Solicitar la dirección con el comando `udhcpc` de la sección 10. |
+| Webterm alcanza `192.168.10.1`, pero no tiene Internet | Puede faltar la política de salida, NAT o una dirección DHCP en `port1`. | Revisar `get system interface physical` y `show firewall policy`. Confirmar que `port1` esté activa y que la política de `port2` hacia `port1` permita tráfico y tenga NAT habilitado. |
+| No responde la dirección del equipo en VMnet1 | La dirección de `port3` o el adaptador asociado a Cloud puede estar equivocado o desconectado. | Confirmar que `port3` use `192.168.142.2/24`, que Cloud esté conectado al adaptador VMware VMnet1 y que los enlaces de GNS3 estén activos. Probar desde Webterm con `ping -c 4 192.168.142.2`. |
+| No abre la interfaz web del FortiGate | Se está usando una dirección incorrecta o HTTP/HTTPS no está habilitado en `port2`. | Desde Webterm probar `http://192.168.10.1`. Revisar que `port2` tenga `192.168.10.1/24` y permita `http` o `https` en `allowaccess`. |
+| Windows no llega a la red `192.168.10.0/24` | Windows no tiene una ruta hacia la LAN de Webterm. | En una consola como administrador agregar la ruta `route -p add 192.168.10.0 mask 255.255.255.0 192.168.142.2`. Verificarla con `route print`. |
+
+Después de corregir cada punto, repetir las pruebas de la sección 10 para comprobar la comunicación.
