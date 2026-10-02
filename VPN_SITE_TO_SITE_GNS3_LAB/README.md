@@ -412,4 +412,4 @@ Interface: GigabitEthernet1/0
 1. Desarrollar de manera individual el laboratorio.
 2. Cargar desarrollo en documento pdf con evidencias y respuestas a interrogarntes.
 3. Sustentación práctica en clase. 
-4. 
+4. Evaluación 
