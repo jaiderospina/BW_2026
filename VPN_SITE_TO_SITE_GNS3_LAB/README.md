@@ -108,7 +108,7 @@ Todas sus interfaces están añadidas en el Área 0 (Backbone). Las redes public
 En el extremo derecho (área morada) se encuentra el dominio del protocolo EIGRP, gestionado por el router central R2 y conectado a los routers R5 (vía g5/0) y R6 (vía g6/0).
 Conectividad Externa / Entorno Virtual: El router R6 posee una interfaz física o lógica (g1/0) conectada hacia un elemento de nube llamado Cloud-1, el cual simula una salida externa mapeada en el entorno virtual a través de la tarjeta de red VMware Network Adapter VMnet8.
 
-
+![](OSPF_EIGRP.png)
 
 ---
 ### Paso 1: Configuración Completa del Router R1
