@@ -85,6 +85,8 @@ El objetivo de esta práctica es diseñar, implementar, diagnosticar y verificar
 
 Descargar topología y IOS desde este repositorio y cargar en gns3 la IOS requerida ( se trata de la compartida en este repositorio).
 
+https://www.telectronika.com/descargas/cisco-imagenes-ios-para-gns3-dynamips-y-vm/
+
 ---
 
 ### Análisis:
