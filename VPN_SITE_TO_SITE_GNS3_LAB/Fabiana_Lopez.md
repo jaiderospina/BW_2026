@@ -16,6 +16,8 @@ Este repositorio contiene la guía paso a paso y la documentación técnica para
                                    <=== Túnel IPsec ===>
 ```
 
+<img width="1919" height="932" alt="image" src="https://github.com/user-attachments/assets/3d09ec3a-5e69-4b65-b250-e6dce3d07a13" />
+
 <img width="1919" height="1079" alt="Captura de pantalla 2026-10-01 205623" src="https://github.com/user-attachments/assets/a8c891cf-dff7-40c5-b2de-b8e840163190" />
 
 
