@@ -16,8 +16,8 @@ Este repositorio contiene la guía paso a paso y la documentación técnica para
                                    <=== Túnel IPsec ===>
 ```
 
-> **📌 Ubicación de Imagen 1:** Coloca aquí la captura del esquema general de la red en GNS3 / CNO.
-> `![Topología General](./imagenes/01_topologia_gns3.png)`
+<img width="1919" height="1079" alt="Captura de pantalla 2026-10-01 205623" src="https://github.com/user-attachments/assets/a8c891cf-dff7-40c5-b2de-b8e840163190" />
+
 
 ---
 
@@ -66,8 +66,9 @@ R1(config-router)# exit
 R1(config)# ip route 2.2.2.0 255.255.255.0 12.1.1.2
 ```
 
-> **📌 Ubicación de Imagen 2:** Captura del CLI aplicando la configuración inicial y OSPF en R1.
-> `![Configuración Inicial R1](./imagenes/02_config_inicial_r1.png)`
+<img width="1918" height="1079" alt="Captura de pantalla 2026-10-01 205916" src="https://github.com/user-attachments/assets/cbf072b6-e348-4c83-bef1-1db931eacb6b" />
+<img width="670" height="1035" alt="Captura de pantalla 2026-10-01 210910" src="https://github.com/user-attachments/assets/39cccc08-6aca-480a-bd03-7c7644e224e4" />
+
 
 ---
 
@@ -113,8 +114,7 @@ R1(config-if)# exit
 R1# copy running-config startup-config
 ```
 
-> **📌 Ubicación de Imagen 3:** Captura de la consola activando ISAKMP en `GigabitEthernet1/0` de R1.
-> `![Activación Crypto Map R1](./imagenes/03_crypto_map_r1.png)`
+<img width="610" height="1010" alt="Captura de pantalla 2026-10-01 210927" src="https://github.com/user-attachments/assets/c157b59e-83ae-4e2a-aa57-d0951661bc16" />
 
 ---
 
@@ -178,8 +178,10 @@ R2(config-if)# exit
 R2# copy running-config startup-config
 ```
 
-> **📌 Ubicación de Imagen 4:** Captura del guardado y confirmación de ISAKMP ON en R2.
-> `![Configuración R2](./imagenes/04_config_r2.png)`
+<img width="685" height="1031" alt="Captura de pantalla 2026-10-01 211711" src="https://github.com/user-attachments/assets/fd851034-6a8d-4c55-8fee-ec3787fb2ca2" />
+<img width="884" height="780" alt="Captura de pantalla 2026-10-01 211732" src="https://github.com/user-attachments/assets/ad5e97f7-a2bb-4cd7-b6bb-b74855840ea5" />
+
+
 
 ---
 
@@ -195,8 +197,10 @@ R1# ping 12.1.1.2
 R1# ping 2.2.2.1 source 1.1.1.1
 ```
 
-> **📌 Ubicación de Imagen 5:** Captura de la ejecución exitosa del ping con origen `1.1.1.1` hacia `2.2.2.1` con éxito del 80%-100%.
-> `![Ping extendido exitoso](./imagenes/05_ping_exitoso.png)`
+<img width="612" height="104" alt="Captura de pantalla 2026-10-01 211833" src="https://github.com/user-attachments/assets/0e084087-9e8d-4196-9b29-fe738de88497" />
+
+<img width="586" height="111" alt="Captura de pantalla 2026-10-01 211901" src="https://github.com/user-attachments/assets/43c9eb82-0c1c-49fa-9a74-cbcd4500d266" />
+
 
 ---
 
@@ -212,8 +216,8 @@ R1# show crypto isakmp sa
 - Estado: `QM_IDLE`
 - Status: `ACTIVE`
 
-> **📌 Ubicación de Imagen 6:** Captura del comando `show crypto isakmp sa` mostrando estado `QM_IDLE`.
-> `![Verificación ISAKMP SA](./imagenes/06_show_crypto_isakmp_sa.png)`
+<img width="600" height="122" alt="Captura de pantalla 2026-10-01 211941" src="https://github.com/user-attachments/assets/8d74bce7-662e-4344-b658-eb355c157fb4" />
+
 
 ---
 
@@ -228,8 +232,8 @@ R1# show crypto ipsec sa
 - `#pkts decaps: 4, #pkts decrypt: 4`
 - Inbound/Outbound SPI activo con protocolo `esp-3des esp-md5-hmac`.
 
-> **📌 Ubicación de Imagen 7:** Captura del comando `show crypto ipsec sa` confirmando el empaquetado y cifrado de paquetes.
-> `![Verificación IPsec SA](./imagenes/07_show_crypto_ipsec_sa.png)`
+<img width="587" height="753" alt="Captura de pantalla 2026-10-01 212018" src="https://github.com/user-attachments/assets/b64d308d-e061-4c2b-89ed-1f88303b8090" />
+
 
 ---
 
