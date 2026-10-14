@@ -36,7 +36,7 @@ El proyecto incluye la siguiente documentación de soporte:
 
 1. Se carga la imagen IOS de Cisco C7200 en GNS3.
 2. Se inicia la topología y digitar la configuración que esta en la guia a los routers R1 y R2.
-3. Se Genera tráfico forzando ping a la IP de origen:
+3. Se genera trafico forzando ping a la IP de origen:
 
 ```text
    R1# ping 2.2.2.1 source 1.1.1.1
