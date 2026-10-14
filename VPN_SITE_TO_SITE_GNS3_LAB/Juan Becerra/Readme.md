@@ -141,7 +141,7 @@ R1(config-if)# exit
 R1(config)# end
 R1# copy running-config startup-config
 ```
-![Configuración R1](capturas/ConfiguracionR1)
+![Configuración R1](capturas/Configuracion_R1)
 
 ### Paso 2: Configuración completa del router R2
 
@@ -218,7 +218,7 @@ R2(config)# end
 R2# copy running-config startup-config
 ```
 
-![Configuración R2](capturas/Configuracion R2.png)
+![Configuración R2](capturas/Configuracion_R2.png)
 
 ### 5. Protocolo de validación y salidas de terminal esperadas
 
@@ -234,7 +234,7 @@ Sending 5, 100-byte ICMP Echos to 12.1.1.2, timeout is 2 seconds:
 Success rate is 100 percent (5/5), round-trip min/avg/max = 16/24/36 ms
 ```
 
-![Pruebas de PING 1](capturas/PING 1.png)
+![Pruebas de PING 1](capturas/PING_1.png)
 
 **Validación 2: generación de tráfico interesante para levantar el túnel**
 
@@ -249,7 +249,7 @@ Packet sent with a source address of 1.1.1.1
 Success rate is 80 percent (4/5), round-trip min/avg/max = 16/22/36 ms
 ```
 
-![Pruebas de PING 2](capturas/PING 2.png)
+![Pruebas de PING 2](capturas/PING_2.png)
 
 *(El primer paquete con `.` representa el tiempo que tardan los routers en negociar las SA de Fase 1 y Fase 2; los 4 restantes se confirman con `!`.)*
 
@@ -265,7 +265,7 @@ IPv6 Crypto ISAKMP SA
 
 *(El estado `QM_IDLE` indica que el canal de gestión IKEv1 está completamente establecido.)*
 
-![Captura de show crypto isakmp sa](capturas/Show crypto.png)
+![Captura de show crypto isakmp sa](capturas/Show_crypto.png)
 
 **Validación 4: verificación de la asociación de seguridad IPsec (Fase 2)**
 
@@ -305,7 +305,7 @@ Interface: GigabitEthernet1/0
         Status: ACTIVE
 ```
 
-![Captura de show crypto ipsec sa](capturas/show crypto ipsec.png)
+![Captura de show crypto ipsec sa](capturas/show_crypto_ipsec.png)
 
 ---
 
