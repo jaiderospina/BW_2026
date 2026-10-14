@@ -141,7 +141,7 @@ R1(config-if)# exit
 R1(config)# end
 R1# copy running-config startup-config
 ```
-![Configuración R1](capturas/Configuracion_R1)
+![Configuración R1](capturas/Configuracion_R1.png)
 
 ### Paso 2: Configuración completa del router R2
 
