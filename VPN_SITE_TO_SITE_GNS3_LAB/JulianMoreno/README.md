@@ -12,7 +12,7 @@ Configurar una VPN entre R1 y R2 para proteger la comunicación entre las redes 
 
 Organicé seis routers: R1, R3 y R4 usan OSPF; R2, R5 y R6 usan EIGRP. La VPN conecta R1 con R2.
 
-**Figura 1. Topología inicial, antes de encender y configurar los routers.**
+**Topología inicial, antes de encender y configurar los routers.**
 
 ![Topología inicial con seis routers y Cloud-1 conectado a R6](img/01-topologia.png)
 
@@ -37,17 +37,17 @@ Para R3, R4, R5 y R6 elegí direcciones disponibles dentro de la red de cada enl
 
 Asigné las direcciones y activé las interfaces con `no shutdown`. Revisé su estado con `show ip interface brief`.
 
-**Figura 2. R1: enlace y Loopback0 en estado up/up.**
+**R1: enlace y Loopback0 en estado up/up.**
 
 ![R1 con las direcciones 12.1.1.1 y 1.1.1.1 activas](img/02-r1-interfaces.png)
 
-**Figura 3. R2: enlace y Loopback0 en estado up/up.**
+**R2: enlace y Loopback0 en estado up/up.**
 
 ![R2 con las direcciones 12.1.1.2 y 2.2.2.1 activas](img/03-r2-interfaces.png)
 
 Desde R2 hice ping a `12.1.1.1`. Respondieron los cinco paquetes, por lo que el enlace entre los routers funcionaba.
 
-**Figura 4. Ping de R2 a R1: 5 de 5 respuestas.**
+**Ping de R2 a R1: 5 de 5 respuestas.**
 
 ![Ping correcto entre las interfaces de R2 y R1](img/04-enlace-r2-r1.png)
 
@@ -67,11 +67,11 @@ ip route 2.2.2.0 255.255.255.0 12.1.1.2
 ip route 1.1.1.0 255.255.255.0 12.1.1.1
 ```
 
-**Figura 5. R1 llega a la red 2.2.2.0/24 por R2.**
+**R1 llega a la red 2.2.2.0/24 por R2.**
 
 ![Ruta estática de R1 mediante 12.1.1.2](img/05-ruta-r1.png)
 
-**Figura 6. R2 llega a la red 1.1.1.0/24 por R1.**
+**R2 llega a la red 1.1.1.0/24 por R1.**
 
 ![Ruta estática de R2 mediante 12.1.1.1](img/06-ruta-r2.png)
 
@@ -104,13 +104,13 @@ show crypto ipsec sa
 
 El ping respondió **5 de 5**. El estado `QM_IDLE` con `ACTIVE` confirmó que los routers habían establecido la negociación IKE.
 
-**Figura 7. Ping entre las redes protegidas y estado IKE en R1.**
+**Ping entre las redes protegidas y estado IKE en R1.**
 
 ![Ping con origen 1.1.1.1 y estado QM_IDLE en R1](img/07-ping-isakmp-r1.png)
 
 R1 registró **9 paquetes cifrados y 9 descifrados**, sin errores de envío o recepción.
 
-**Figura 8. Contadores de tráfico protegido en R1.**
+**Contadores de tráfico protegido en R1.**
 
 ![IPsec activo en R1 con nueve paquetes en cada sentido](img/08-ipsec-sa-r1.png)
 
@@ -126,7 +126,7 @@ show crypto ipsec sa
 
 El ping respondió **5 de 5**. R2 mostró **14 paquetes cifrados y 14 descifrados**, sin errores. Los contadores aumentan al realizar más pruebas.
 
-**Figura 9. Ping y tráfico protegido desde R2.**
+**Ping y tráfico protegido desde R2.**
 
 ![Ping correcto y contadores IPsec activos en R2](img/09-verificacion-vpn-r2.png)
 
@@ -134,13 +134,13 @@ El ping respondió **5 de 5**. R2 mostró **14 paquetes cifrados y 14 descifrado
 
 Configuré OSPF en el área 0 entre R1, R3 y R4. R1 reconoció a los otros dos routers en estado **FULL**, lo que confirma que completaron la conexión OSPF.
 
-**Figura 10. Vecinos OSPF de R1.**
+**Vecinos OSPF de R1.**
 
 ![R3 y R4 aparecen como vecinos FULL en R1](img/10-vecinos-ospf-r1.png)
 
 R3 aprendió la ruta hacia `1.1.1.1` y el ping respondió **5 de 5**.
 
-**Figura 11. Ruta aprendida y ping desde R3.**
+**Ruta aprendida y ping desde R3.**
 
 ![Ruta OSPF y ping correcto hacia la loopback de R1](img/12-ruta-ospf-r3.png)
 
@@ -148,13 +148,13 @@ R3 aprendió la ruta hacia `1.1.1.1` y el ping respondió **5 de 5**.
 
 Configuré EIGRP 100 entre R2, R5 y R6. R2 reconoció a R5 (`25.1.1.5`) y a R6 (`26.1.1.6`) como vecinos.
 
-**Figura 12. Vecinos EIGRP de R2.**
+**Vecinos EIGRP de R2.**
 
 ![R5 y R6 aparecen como vecinos EIGRP en R2](img/11-vecinos-eigrp-r2.png)
 
 R5 aprendió la ruta hacia `2.2.2.0/24` y el ping a `2.2.2.1` respondió **5 de 5**.
 
-**Figura 13. Ruta aprendida y ping desde R5.**
+**Ruta aprendida y ping desde R5.**
 
 ![Ruta EIGRP y ping correcto hacia la loopback de R2](img/13-ruta-eigrp-r5.png)
 
