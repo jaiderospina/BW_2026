@@ -1,27 +1,29 @@
 # Laboratorio VPN IPsec sitio a sitio en GNS3
 
-**Estudiante:** Julián Camilo Moreno Valderrama  
-**Herramientas:** GNS3 y routers Cisco 7200 con IOS 15.2(4)M7.  
-**Guía:** [VPN_SITE_TO_SITE_GNS3_LAB](../README.md).
+**Estudiante:** Julián Camilo Moreno Valderrama
+
+**Herramientas:** GNS3 y routers Cisco 7200 con IOS 15.2(4)M7.
 
 ## Objetivo
 
-Configurar y comprobar una VPN IPsec entre R1 y R2. La VPN protege el tráfico entre `1.1.1.0/24` y `2.2.2.0/24`. En cada lado se configuró además una red interna: OSPF entre R1, R3 y R4; EIGRP entre R2, R5 y R6.
+Configurar una VPN entre R1 y R2 para proteger la comunicación entre las redes `1.1.1.0/24` y `2.2.2.0/24`. También comprobar las conexiones internas con OSPF y EIGRP.
 
 ## 1. Topología y direcciones
 
-La siguiente captura muestra el proyecto al abrirlo, antes de encender y configurar los routers. El enlace central une R1 con R2; Cloud-1 aparece conectado a R6 por VMnet8.
+Organicé seis routers: R1, R3 y R4 usan OSPF; R2, R5 y R6 usan EIGRP. La VPN conecta R1 con R2.
 
-![Topología inicial del proyecto](img/01-topologia.png)
+**Figura 1. Topología inicial, antes de encender y configurar los routers.**
+
+![Topología inicial con seis routers y Cloud-1 conectado a R6](img/01-topologia.png)
 
 | Router | Interfaz | Dirección | Conexión |
 | --- | --- | --- | --- |
-| R1 | GigabitEthernet1/0 | `12.1.1.1/24` | R2, extremo de la VPN |
-| R1 | Loopback0 | `1.1.1.1/24` | Red protegida izquierda |
+| R1 | GigabitEthernet1/0 | `12.1.1.1/24` | R2 |
+| R1 | Loopback0 | `1.1.1.1/24` | Red protegida de R1 |
 | R1 | GigabitEthernet3/0 | `13.1.1.1/24` | R3 |
 | R1 | GigabitEthernet4/0 | `14.1.1.1/24` | R4 |
-| R2 | GigabitEthernet1/0 | `12.1.1.2/24` | R1, extremo de la VPN |
-| R2 | Loopback0 | `2.2.2.1/24` | Red protegida derecha |
+| R2 | GigabitEthernet1/0 | `12.1.1.2/24` | R1 |
+| R2 | Loopback0 | `2.2.2.1/24` | Red protegida de R2 |
 | R2 | GigabitEthernet5/0 | `25.1.1.2/24` | R5 |
 | R2 | GigabitEthernet6/0 | `26.1.1.2/24` | R6 |
 | R3 | GigabitEthernet3/0 | `13.1.1.3/24` | R1 |
@@ -29,117 +31,183 @@ La siguiente captura muestra el proyecto al abrirlo, antes de encender y configu
 | R5 | GigabitEthernet5/0 | `25.1.1.5/24` | R2 |
 | R6 | GigabitEthernet6/0 | `26.1.1.6/24` | R2 |
 
-La guía no especifica las direcciones de R3, R4, R5 y R6. Se eligieron direcciones disponibles dentro de los segmentos indicados por las interfaces de R1 y R2.
+Para R3, R4, R5 y R6 elegí direcciones disponibles dentro de la red de cada enlace. Las loopbacks son interfaces virtuales que representan las redes protegidas.
 
 ## 2. Interfaces y enlace entre R1 y R2
 
-Se asignó `12.1.1.1/24` a R1 y `12.1.1.2/24` a R2. Las loopbacks representan las redes que se van a proteger. Se habilitaron las interfaces con `no shutdown` y se guardaron los cambios con `write memory`.
+Asigné las direcciones y activé las interfaces con `no shutdown`. Revisé su estado con `show ip interface brief`.
 
-![Interfaces activas de R1](img/02-r1-interfaces.png)
+**Figura 2. R1: enlace y Loopback0 en estado up/up.**
 
-![Interfaces activas de R2](img/03-r2-interfaces.png)
+![R1 con las direcciones 12.1.1.1 y 1.1.1.1 activas](img/02-r1-interfaces.png)
 
-El ping desde R2 a `12.1.1.1` respondió **5 de 5**. Esto comprobó el enlace físico antes de configurar el cifrado.
+**Figura 3. R2: enlace y Loopback0 en estado up/up.**
 
-![Prueba del enlace R2 a R1](img/04-enlace-r2-r1.png)
+![R2 con las direcciones 12.1.1.2 y 2.2.2.1 activas](img/03-r2-interfaces.png)
+
+Desde R2 hice ping a `12.1.1.1`. Respondieron los cinco paquetes, por lo que el enlace entre los routers funcionaba.
+
+**Figura 4. Ping de R2 a R1: 5 de 5 respuestas.**
+
+![Ping correcto entre las interfaces de R2 y R1](img/04-enlace-r2-r1.png)
 
 ## 3. Rutas hacia la red remota
 
-Cada router necesita una ruta hacia la red protegida del otro extremo. Se configuraron estas rutas estáticas:
+Agregué una ruta en cada router para llegar a la red del otro lado.
+
+**En R1:**
 
 ```text
-R1: ip route 2.2.2.0 255.255.255.0 12.1.1.2
-R2: ip route 1.1.1.0 255.255.255.0 12.1.1.1
+ip route 2.2.2.0 255.255.255.0 12.1.1.2
 ```
 
-Las consultas de la tabla de rutas mostraron el siguiente salto correcto en ambos routers.
+**En R2:**
 
-![Ruta estática en R1](img/05-ruta-r1.png)
+```text
+ip route 1.1.1.0 255.255.255.0 12.1.1.1
+```
 
-![Ruta estática en R2](img/06-ruta-r2.png)
+**Figura 5. R1 llega a la red 2.2.2.0/24 por R2.**
+
+![Ruta estática de R1 mediante 12.1.1.2](img/05-ruta-r1.png)
+
+**Figura 6. R2 llega a la red 1.1.1.0/24 por R1.**
+
+![Ruta estática de R2 mediante 12.1.1.1](img/06-ruta-r2.png)
 
 ## 4. Configuración y prueba de la VPN
 
-En R1 y R2 se configuró IKEv1 con clave compartida, una transformación IPsec y un *crypto map* en `GigabitEthernet1/0`. Las listas de acceso son simétricas: en R1 identifican tráfico de `1.1.1.0/24` a `2.2.2.0/24` y en R2 identifican el sentido contrario.
+Configuré la misma clave y los parámetros de la guía en ambos routers. La lista de acceso (ACL) indica qué comunicación debe proteger la VPN.
 
-| Parámetro | Valor usado en el laboratorio |
+| Configuración | Valor utilizado |
 | --- | --- |
-| IKEv1 | Política 1, autenticación con clave compartida |
-| Cifrado y hash | 3DES y MD5 |
-| Diffie-Hellman | Grupo 2 |
-| Transformación IPsec | `SEC`, ESP 3DES y ESP MD5-HMAC, modo túnel |
-| Crypto map | `R1R2`, secuencia 10, aplicado en `GigabitEthernet1/0` |
-| Peer de R1 | `12.1.1.2` |
-| Peer de R2 | `12.1.1.1` |
+| Negociación de la VPN | IKEv1, política 1 |
+| Clave compartida del laboratorio | `ccie123` |
+| Cifrado y comprobación de integridad | 3DES y MD5 |
+| Grupo Diffie-Hellman | 2 |
+| Conjunto IPsec | `SEC`: `esp-3des esp-md5-hmac`, modo túnel |
+| Mapa de la VPN | `R1R2`, secuencia 10, en `GigabitEthernet1/0` |
+| Dirección del otro extremo | R1 usa `12.1.1.2`; R2 usa `12.1.1.1` |
+| Redes protegidas | `1.1.1.0/24` y `2.2.2.0/24` |
 
-Estos algoritmos se usaron para reproducir la guía del laboratorio. Las configuraciones completas y guardadas de los seis routers están en la carpeta [`configs`](configs/).
+Las configuraciones completas están disponibles por router: [R1](configs/R1.cfg), [R2](configs/R2.cfg), [R3](configs/R3.cfg), [R4](configs/R4.cfg), [R5](configs/R5.cfg) y [R6](configs/R6.cfg).
 
-Para iniciar tráfico que coincidiera con la lista de acceso de la VPN, en R1 se ejecutó:
+### Prueba desde R1
+
+Usé la dirección de la loopback como origen para que el ping pasara por la VPN:
 
 ```text
 ping 2.2.2.1 source 1.1.1.1
+show crypto isakmp sa
+show crypto ipsec sa
 ```
 
-Respondieron **5 de 5** paquetes y `show crypto isakmp sa` mostró `QM_IDLE` y `ACTIVE`.
+El ping respondió **5 de 5**. El estado `QM_IDLE` con `ACTIVE` confirmó que los routers habían establecido la negociación IKE.
 
-![Ping e IKEv1 en R1](img/07-ping-isakmp-r1.png)
+**Figura 7. Ping entre las redes protegidas y estado IKE en R1.**
 
-La consulta `show crypto ipsec sa` mostró asociaciones ESP activas en R1, con **9 paquetes encapsulados y 9 desencapsulados** en el momento de la captura.
+![Ping con origen 1.1.1.1 y estado QM_IDLE en R1](img/07-ping-isakmp-r1.png)
 
-![Asociaciones IPsec en R1](img/08-ipsec-sa-r1.png)
+R1 registró **9 paquetes cifrados y 9 descifrados**, sin errores de envío o recepción.
 
-Se repitió el ping en sentido contrario, desde `2.2.2.1` hacia `1.1.1.1`. En R2 respondió **5 de 5** y los contadores IPsec mostraron **14 paquetes encapsulados y 14 desencapsulados**. Los valores de los contadores pueden aumentar al repetir las pruebas.
+**Figura 8. Contadores de tráfico protegido en R1.**
 
-![Pruebas de VPN desde R2](img/09-verificacion-vpn-r2.png)
+![IPsec activo en R1 con nueve paquetes en cada sentido](img/08-ipsec-sa-r1.png)
 
-## 5. Enrutamiento interno OSPF
+### Prueba desde R2
 
-R1, R3 y R4 forman el área 0 de OSPF. Se configuraron los enlaces `13.1.1.0/24` y `14.1.1.0/24`, además de la loopback de R1. En R1, `show ip ospf neighbor` mostró a R3 y R4 en estado **FULL**.
+Repetí la prueba en sentido contrario:
 
-![Vecinos OSPF vistos desde R1](img/10-vecinos-ospf-r1.png)
+```text
+ping 1.1.1.1 source 2.2.2.1
+show crypto isakmp sa
+show crypto ipsec sa
+```
 
-R3 aprendió por OSPF la ruta a `1.1.1.1/32` a través de R1 y pudo hacer ping a esa dirección con **5 de 5** respuestas.
+El ping respondió **5 de 5**. R2 mostró **14 paquetes cifrados y 14 descifrados**, sin errores. Los contadores aumentan al realizar más pruebas.
 
-![Ruta y ping OSPF desde R3](img/12-ruta-ospf-r3.png)
+**Figura 9. Ping y tráfico protegido desde R2.**
 
-## 6. Enrutamiento interno EIGRP
+![Ping correcto y contadores IPsec activos en R2](img/09-verificacion-vpn-r2.png)
 
-R2, R5 y R6 usan EIGRP con el sistema autónomo 100. Se configuraron los enlaces `25.1.1.0/24` y `26.1.1.0/24`, además de la loopback de R2. En R2 aparecieron dos vecinos: R5 (`25.1.1.5`) y R6 (`26.1.1.6`).
+## 5. Prueba de OSPF
 
-![Vecinos EIGRP vistos desde R2](img/11-vecinos-eigrp-r2.png)
+Configuré OSPF en el área 0 entre R1, R3 y R4. R1 reconoció a los otros dos routers en estado **FULL**, lo que confirma que completaron la conexión OSPF.
 
-R5 aprendió la ruta `2.2.2.0/24` por EIGRP a través de R2 y pudo hacer ping a `2.2.2.1` con **5 de 5** respuestas.
+**Figura 10. Vecinos OSPF de R1.**
 
-![Ruta y ping EIGRP desde R5](img/13-ruta-eigrp-r5.png)
+![R3 y R4 aparecen como vecinos FULL en R1](img/10-vecinos-ospf-r1.png)
 
-## 7. Respuestas al cuestionario
+R3 aprendió la ruta hacia `1.1.1.1` y el ping respondió **5 de 5**.
 
-**1. ¿Por qué el ping sin dirección de origen no inicia la VPN?** R1 usa normalmente como origen la dirección de salida `12.1.1.1`. La lista de acceso de la VPN solo identifica paquetes de `1.1.1.0/24` a `2.2.2.0/24`, así que ese ping no activa el cifrado. Que el ping simple reciba respuesta depende de las rutas y políticas del entorno; lo que sí se comprobó en esta práctica es que el ping con `source 1.1.1.1` activa y usa la VPN.
+**Figura 11. Ruta aprendida y ping desde R3.**
 
-**2. ¿Qué ocurre si falta la clave compartida?** R1 y R2 no pueden completar la autenticación IKEv1. Sin la asociación de seguridad de IKE, no se negocian las asociaciones IPsec necesarias para cifrar el tráfico.
+![Ruta OSPF y ping correcto hacia la loopback de R1](img/12-ruta-ospf-r3.png)
 
-**3. ¿Para qué sirve la ruta estática si la ACL ya identifica el tráfico?** La ACL selecciona qué tráfico se cifra, pero no indica por dónde enviarlo. La ruta hace que el paquete salga por `GigabitEthernet1/0`, donde está aplicado el *crypto map*.
+## 6. Prueba de EIGRP
 
-**4. ¿Qué se vería en una captura de Wireshark del enlace R1-R2?** Se podrían observar las direcciones externas de los peers, el protocolo ESP y datos de su cabecera. El contenido del paquete original y sus direcciones internas quedarían protegidos por ESP en modo túnel. Esta respuesta describe el comportamiento esperado; no se realizó una captura de Wireshark en esta práctica.
+Configuré EIGRP 100 entre R2, R5 y R6. R2 reconoció a R5 (`25.1.1.5`) y a R6 (`26.1.1.6`) como vecinos.
 
-**5. ¿Por qué OSPF y EIGRP no forman vecindad a través de esta VPN?** El *crypto map* protege tráfico IP seleccionado por una ACL entre dos redes. Los mensajes de OSPF y EIGRP emplean multicast y este diseño no los transporta como un enlace entre los dos dominios. Por eso OSPF y EIGRP funcionan cada uno en su lado. Para intercambiar protocolos dinámicos por un enlace cifrado se puede usar un túnel GRE protegido con IPsec u otra solución de VPN basada en interfaz.
+**Figura 12. Vecinos EIGRP de R2.**
 
-Las ACL de R1 y R2 tienen origen y destino invertidos para proteger las mismas comunicaciones en cada sentido. Se omitió el diálogo inicial de Cisco IOS para ingresar directamente la configuración requerida desde la consola.
+![R5 y R6 aparecen como vecinos EIGRP en R2](img/11-vecinos-eigrp-r2.png)
 
-## 8. Problemas encontrados
+R5 aprendió la ruta hacia `2.2.2.0/24` y el ping a `2.2.2.1` respondió **5 de 5**.
 
-| Situación | Cómo se resolvió |
+**Figura 13. Ruta aprendida y ping desde R5.**
+
+![Ruta EIGRP y ping correcto hacia la loopback de R2](img/13-ruta-eigrp-r5.png)
+
+## 7. Respuestas a las preguntas
+
+### Preguntas orientadoras
+
+**1. ¿Por qué el ping sin indicar el origen no activa la VPN, aunque exista una ruta?**
+
+Porque R1 usa `12.1.1.1` como origen y la VPN protege la red `1.1.1.0/24`. Al agregar `source 1.1.1.1`, el ping coincide con la ACL y activa la VPN.
+
+**2. ¿Qué relación tienen las listas de acceso de R1 y R2?**
+
+Protegen las mismas redes, pero invierten el origen y el destino. Así cubren la comunicación en ambos sentidos.
+
+**3. ¿Por qué la falta de `crypto isakmp key` impide establecer la fase 1 (Main Mode)?**
+
+Sin la clave compartida, los routers no pueden comprobar la identidad del otro. La fase 1 no se completa y la VPN no queda establecida.
+
+**4. ¿Qué ventaja tiene omitir el diálogo inicial de configuración?**
+
+Permite escribir directamente los comandos del laboratorio, en el orden necesario, sin pasar por las preguntas del asistente.
+
+### Cuestionario de evaluación
+
+**1. ¿Por qué un ping simple no activa el túnel ni garantiza una respuesta?**
+
+Su origen queda fuera de la ACL de la VPN. Podría responder sin cifrado si las rutas lo permiten; para comprobar la VPN usé `ping 2.2.2.1 source 1.1.1.1`.
+
+**2. ¿Qué significa el mensaje `No pre-shared key with 12.1.1.2!`?**
+
+Indica que falta la clave compartida para ese router. La autenticación falla y no se establece la VPN; hay que configurar la misma clave en ambos extremos.
+
+**3. ¿Para qué sirve la ruta estática si ya existe la ACL?**
+
+La ruta indica por dónde enviar los paquetes. La ACL selecciona cuáles se deben cifrar. Se necesitan ambas para esta configuración.
+
+**4. ¿Qué se vería en Wireshark durante el envío de datos por la VPN?**
+
+Se verían las direcciones externas `12.1.1.1` y `12.1.1.2`, junto con el tráfico ESP. Las direcciones internas y el contenido original quedarían cifrados.
+
+**5. ¿Por qué OSPF y EIGRP no forman vecinos a través de esta VPN?**
+
+Sus mensajes de descubrimiento usan multicast y no coinciden con las redes seleccionadas por esta VPN. Para transportarlos entre los extremos se podría usar GRE protegido con IPsec.
+
+## 8. Problemas y soluciones
+
+| Problema | Cómo lo resolví |
 | --- | --- |
-| IOS mostró un aviso de exceso de capacidad del bus PCI al arrancar. | Se esperó el arranque y se comprobó que los routers llegaban al indicador de comandos. El aviso no impidió esta simulación. |
-| Varios comandos se pegaron seguidos en PuTTY y aparecieron errores de sintaxis. | Se guardaron bloques de texto con una línea por comando en Bloc de notas y se pegaron desde el indicador correcto (`Router#` o `R1#`). |
-| El proyecto anterior no conservó la configuración esperada. | Se abrió de nuevo la topología, se configuraron los routers y se guardó cada uno con `write memory`. También se conservó una copia local de las seis configuraciones. |
+| Apareció un aviso de exceso de capacidad del bus PCI. | Esperé el arranque y comprobé las interfaces. El aviso no impidió realizar las pruebas en GNS3. |
+| PuTTY pegaba varios comandos en una sola línea. | Organicé el texto en Bloc de notas, con un comando por línea, y lo pegué de nuevo. |
+| La configuración anterior no estaba guardada. | Volví a configurar los routers, ejecuté `write memory` en cada uno y conservé una copia de sus configuraciones. |
 
-## 9. Alcance y fuentes
+## 9. Resultado final
 
-El nodo Cloud-1 figura conectado a VMnet8 en la topología. En esta entrega se comprobó la VPN y las vecindades internas; no se documenta una prueba de conectividad externa a través de Cloud-1.
-
-Las configuraciones 3DES, MD5 y grupo 2 corresponden a la práctica indicada por el profesor. Para redes de producción se deben utilizar parámetros criptográficos actuales.
-
-- [Guía del laboratorio del repositorio](../README.md)
-- [Cisco: interpretación de `show crypto isakmp sa` y `show crypto ipsec sa`](https://www.cisco.com/c/en/us/support/docs/security-vpn/ipsec-negotiation-ike-protocols/5409-ipsec-debug-00.html)
-- [Cisco: protocolos de enrutamiento sobre GRE e IPsec](https://www.cisco.com/c/en/us/support/docs/security-vpn/ipsec-negotiation-ike-protocols/14381-gre-ipsec-ospf.pdf)
+Comprobé la VPN entre las loopbacks de R1 y R2 con respuestas en ambos sentidos y contadores de cifrado activos. También verifiqué OSPF desde R3 y EIGRP desde R5. Guardé las configuraciones de los seis routers.
