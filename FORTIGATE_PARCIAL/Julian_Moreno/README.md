@@ -1,7 +1,7 @@
 # Bitácora de Exploración Funcional: FortiGate VM en Redes de Banda Ancha
 
 **Estudiante:** Julián Camilo Moreno Valderrama  
-**Código / ID:** 1701805  
+**Código Estudiantil :** 1701805  
 **Fecha:** 15 de octubre de 2026  
 **Asignatura:** Banda Ancha  
 
