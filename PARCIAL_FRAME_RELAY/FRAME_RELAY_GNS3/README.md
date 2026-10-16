@@ -47,7 +47,9 @@ Frame Relay pertenece principalmente a la capa de enlace de datos del modelo OSI
 
 ### 2.2. Arquitectura del laboratorio
 
-La infraestructura está compuesta por cuatro routers:
+La infraestructura está compuesta por cuatro  dispositivos:
+
+![](Topologia.png)
 
 - **R4:** router cliente de la primera sede.
 - **FRSW1:** switch Frame Relay de la primera parte de la nube.
