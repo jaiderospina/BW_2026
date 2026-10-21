@@ -102,7 +102,7 @@ A continuación se detalla la función técnica y el impacto en redes de banda a
 
 ### 4.2. Performance SLA y Mecanismos de Calidad de Enlace
 * **Evidencia gráfica:**
-  ![Performance SLA](capturas/Topologia.png)
+  ![Performance SLA](capturas/Performance_SLA.png)
   *Parametrización de servidores de prueba (probes) y umbrales de Latencia, Jitter y Loss.*
 
 * **Concepto técnico:**
@@ -116,7 +116,7 @@ A continuación se detalla la función técnica y el impacto en redes de banda a
 
 ### 4.3. Estrategias de Reglas SD-WAN
 * **Evidencia gráfica:**
-  ![SD-WAN Rules](capturas/Topologia.png)
+  ![SD-WAN Rules](capturas/SDWAN_rules.png)
   *Reglas de selección de interfaz basadas en calidad de servicio y SLA.*
 
 * **Concepto técnico:**
@@ -131,7 +131,7 @@ A continuación se detalla la función técnica y el impacto en redes de banda a
 
 ### 5.1. Traffic Shaping
 * **Evidencia gráfica:**
-  ![Traffic Shaping](capturas/Topologia.png)
+  ![Traffic Shaping](capturas/Traffic_shaping.png)
   *Configuración de asignación de ancho de banda garantizado, máximo y prioridades.*
 
 * **Concepto técnico y aplicación:**
