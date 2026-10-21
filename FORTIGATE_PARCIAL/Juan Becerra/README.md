@@ -14,6 +14,7 @@
   *Evidencia visual de la infraestructura simulada en GNS3, mostrando el nodo FortiGate VM interconectado con las redes LAN y enlaces WAN.*
 
 * **Dashboard de FortiOS:**
+  
   ![Dashboard FortiOS](capturas/Fortigate.png)
   *Panel principal de administración gráfica donde se valida el Hostname (`FortiGate-VM64`), la versión de firmware FortiOS y el estado de recursos del sistema (CPU, RAM).*
 
