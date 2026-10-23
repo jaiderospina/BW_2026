@@ -1,0 +1,12 @@
+R5#show frame-relay map
+Serial1/0 (up): ip 10.0.0.1 dlci 100(0x64,0x1840), static,
+              broadcast,
+              CISCO, status defined, active
+R5#
+R5#ping 10.0.0.1
+
+Type escape sequence to abort.
+Sending 5, 100-byte ICMP Echos to 10.0.0.1, timeout is 2 seconds:
+!!!!!
+Success rate is 100 percent (5/5), round-trip min/avg/max = 80/92/104 ms
+R5#
