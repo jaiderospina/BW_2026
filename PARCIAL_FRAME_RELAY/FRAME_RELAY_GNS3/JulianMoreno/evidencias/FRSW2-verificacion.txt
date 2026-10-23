@@ -1,5 +1,0 @@
-FRSW2#show frame-relay route
-Input Intf 	Input Dlci 	Output Intf 	Output Dlci 	Status
-Serial1/0       50 		Serial1/1       100 		active
-Serial1/1       100 		Serial1/0       50 		active
-FRSW2#
