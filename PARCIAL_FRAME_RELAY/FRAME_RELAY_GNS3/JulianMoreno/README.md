@@ -121,23 +121,15 @@ Con `show frame-relay route` comprobé que las dos rutas de cada switch estaban 
 
 ### Mapas de R4 y R5
 
-En R4, `show frame-relay map` mostró este resultado:
+En R4, `show frame-relay map` mostró el mapa hacia 10.0.0.2:
 
-```text
-Serial1/0 (up): ip 10.0.0.2 dlci 100(0x64,0x1840), static,
-              broadcast,
-              CISCO, status defined, active
-```
+![Mapa Frame Relay activo de R4 hacia R5](img/05-mapa-R4.png)
 
 La interfaz estaba activa y tenía un mapa estático hacia R5 por el DLCI 100. La opción `broadcast` permite enviar por ese circuito el tráfico de difusión y multidifusión que corresponda. [Cisco: mapas Frame Relay y opción broadcast](https://www.cisco.com/c/en/us/support/docs/wan/frame-relay/16563-12.html).
 
-En R5 comprobé el mapa de regreso con el mismo comando:
+En R5 comprobé el mapa de regreso hacia 10.0.0.1 con el mismo comando:
 
-```text
-Serial1/0 (up): ip 10.0.0.1 dlci 100(0x64,0x1840), static,
-              broadcast,
-              CISCO, status defined, active
-```
+![Mapa Frame Relay activo de R5 hacia R4](img/06-mapa-R5.png)
 
 Así confirmé que cada router tiene un mapa activo hacia la IP del otro.
 
@@ -147,14 +139,9 @@ Desde R4 hice ping a 10.0.0.2 y recibí **5 de 5 respuestas**.
 
 ![Ping de R4 a R5 con resultado del 100 %](img/04-ping-R4-R5.png)
 
-Desde R5 repetí la prueba hacia 10.0.0.1. El resultado guardado en la consola fue:
+Desde R5 repetí el ping hacia 10.0.0.1 y también recibí **5 de 5 respuestas**.
 
-```text
-R5#ping 10.0.0.1
-Sending 5, 100-byte ICMP Echos to 10.0.0.1, timeout is 2 seconds:
-!!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 92/95/108 ms
-```
+![Ping de R5 a R4 con resultado del 100 %](img/07-ping-R5-R4.png)
 
 Con estas pruebas comprobé que R4 y R5 podían comunicarse a través de los dos switches.
 
