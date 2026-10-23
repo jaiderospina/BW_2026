@@ -33,6 +33,7 @@ configure terminal
 interface Serial1/0
  ip address 10.0.0.1 255.255.255.252
  encapsulation frame-relay
+ frame-relay intf-type dte
  frame-relay map ip 10.0.0.2 100 broadcast
  no shutdown
 end
@@ -90,13 +91,14 @@ configure terminal
 interface Serial1/0
  ip address 10.0.0.2 255.255.255.252
  encapsulation frame-relay
+ frame-relay intf-type dte
  frame-relay map ip 10.0.0.1 100 broadcast
  no shutdown
 end
 write memory
 ```
 
-Durante la configuración, `frame-relay intf-type` no se reconocía porque faltaba aplicar `encapsulation frame-relay` en la interfaz. Después de agregarlo, aparecieron las opciones DTE, DCE y NNI.
+Durante la configuración, `frame-relay intf-type` no se reconocía porque faltaba aplicar `encapsulation frame-relay` en la interfaz. Después de agregarlo, aparecieron las opciones DTE, DCE y NNI. También ejecuté `frame-relay intf-type dte` en R4 y R5; IOS aceptó el comando, pero no lo muestra en `show running-config` porque DTE es el valor predeterminado en esos routers.
 
 **Configuraciones completas guardadas:** [R4](configs/R4.cfg), [R5](configs/R5.cfg), [FRSW1](configs/FRSW1.cfg) y [FRSW2](configs/FRSW2.cfg).\
 **Proyecto:** [Frame Relay en GNS3](FrameRelay-JulianMoreno.gns3project). Para abrirlo se necesita la imagen `c7200-a3jk9s-mz.124-25g.image` instalada en GNS3.
@@ -117,9 +119,9 @@ Con `show frame-relay route` comprobé que las dos rutas de cada switch estaban 
 
 ![Tabla de rutas de FRSW2](img/03-rutas-FRSW2.png)
 
-### Mapa de R4
+### Mapas de R4 y R5
 
-El comando `show frame-relay map` mostró este resultado:
+En R4, `show frame-relay map` mostró este resultado:
 
 ```text
 Serial1/0 (up): ip 10.0.0.2 dlci 100(0x64,0x1840), static,
@@ -128,6 +130,16 @@ Serial1/0 (up): ip 10.0.0.2 dlci 100(0x64,0x1840), static,
 ```
 
 La interfaz estaba activa y tenía un mapa estático hacia R5 por el DLCI 100. La opción `broadcast` permite enviar por ese circuito el tráfico de difusión y multidifusión que corresponda. [Cisco: mapas Frame Relay y opción broadcast](https://www.cisco.com/c/en/us/support/docs/wan/frame-relay/16563-12.html).
+
+En R5 comprobé el mapa de regreso con el mismo comando:
+
+```text
+Serial1/0 (up): ip 10.0.0.1 dlci 100(0x64,0x1840), static,
+              broadcast,
+              CISCO, status defined, active
+```
+
+Así confirmé que cada router tiene un mapa activo hacia la IP del otro.
 
 ### Ping en ambos sentidos
 
@@ -141,7 +153,7 @@ Desde R5 repetí la prueba hacia 10.0.0.1. El resultado guardado en la consola f
 R5#ping 10.0.0.1
 Sending 5, 100-byte ICMP Echos to 10.0.0.1, timeout is 2 seconds:
 !!!!!
-Success rate is 100 percent (5/5), round-trip min/avg/max = 80/92/104 ms
+Success rate is 100 percent (5/5), round-trip min/avg/max = 92/95/108 ms
 ```
 
 Con estas pruebas comprobé que R4 y R5 podían comunicarse a través de los dos switches.
