@@ -9,7 +9,7 @@
 
 ## 1. Desarrollo del laboratorio
 
-Conecté los routers R4 y R5 por medio de FRSW1 y FRSW2, que funcionan como la nube Frame Relay. Utilicé GNS3 y routers Cisco 7200 con IOS 12.4(25g).
+Conecté R4 y R5 a través de FRSW1 y FRSW2 para formar la nube Frame Relay. Hice la práctica en GNS3 con routers Cisco 7200 e IOS 12.4(25g).
 
 **Topología de la práctica:**
 
@@ -26,7 +26,7 @@ Conecté los routers R4 y R5 por medio de FRSW1 y FRSW2, que funcionan como la n
 
 ### Configuración de R4
 
-Le asigné la IP 10.0.0.1 a la interfaz que va hacia FRSW1. El mapa indica que para llegar a R5 (10.0.0.2) debe usar el DLCI 100.
+Le puse la IP 10.0.0.1 a la interfaz conectada con FRSW1. El mapa le indica a R4 que use el DLCI 100 para llegar a R5.
 
 ```cisco
 configure terminal
@@ -42,7 +42,7 @@ write memory
 
 ### Configuración de FRSW1
 
-Habilité la conmutación Frame Relay. Serial1/1 recibe las tramas de R4 con DLCI 100 y las envía a FRSW2 por Serial1/0 con DLCI 50. La segunda ruta permite el regreso.
+Activé la conmutación Frame Relay en FRSW1. Las tramas llegan desde R4 por Serial1/1 con DLCI 100 y salen hacia FRSW2 por Serial1/0 con DLCI 50. También configuré el camino de regreso.
 
 ```cisco
 configure terminal
@@ -63,7 +63,7 @@ write memory
 
 ### Configuración de FRSW2
 
-Este switch recibe el circuito desde FRSW1 por Serial1/0 y lo entrega a R5 por Serial1/1. También tiene la ruta contraria para que R5 pueda responder.
+FRSW2 recibe las tramas de FRSW1 por Serial1/0 y las envía a R5 por Serial1/1. Configuré la ruta contraria para que R5 pueda responder.
 
 ```cisco
 configure terminal
@@ -84,7 +84,7 @@ write memory
 
 ### Configuración de R5
 
-Le asigné la IP 10.0.0.2 a la interfaz conectada con FRSW2. Su mapa usa el DLCI 100 para enviar tráfico hacia R4 (10.0.0.1).
+Le puse la IP 10.0.0.2 a la interfaz conectada con FRSW2. El mapa le indica a R5 que use el DLCI 100 para llegar a R4.
 
 ```cisco
 configure terminal
@@ -98,7 +98,7 @@ end
 write memory
 ```
 
-Durante la configuración, `frame-relay intf-type` no se reconocía porque faltaba aplicar `encapsulation frame-relay` en la interfaz. Después de agregarlo, aparecieron las opciones DTE, DCE y NNI. También ejecuté `frame-relay intf-type dte` en R4 y R5; IOS aceptó el comando, pero no lo muestra en `show running-config` porque DTE es el valor predeterminado en esos routers.
+Al principio, el equipo no aceptó `frame-relay intf-type` porque faltaba `encapsulation frame-relay`. Lo corregí y pude continuar. También ejecuté `frame-relay intf-type dte` en R4 y R5. IOS lo aceptó, pero no aparece en `show running-config` porque DTE ya es el valor predeterminado.
 
 **Configuraciones completas guardadas:** [R4](configs/R4.cfg), [R5](configs/R5.cfg), [FRSW1](configs/FRSW1.cfg) y [FRSW2](configs/FRSW2.cfg).\
 **Proyecto:** [Frame Relay en GNS3](FrameRelay-JulianMoreno.gns3project). Para abrirlo se necesita la imagen `c7200-a3jk9s-mz.124-25g.image` instalada en GNS3.
@@ -109,7 +109,7 @@ Durante la configuración, `frame-relay intf-type` no se reconocía porque falta
 
 ### Rutas en FRSW1 y FRSW2
 
-Con `show frame-relay route` comprobé que las dos rutas de cada switch estaban en estado **active**. Una lleva las tramas de Serial1/1 con DLCI 100 hacia Serial1/0 con DLCI 50; la otra hace el recorrido contrario.
+Con `show frame-relay route` comprobé que cada switch tiene dos rutas en estado **active**: una de ida y otra de regreso.
 
 **Rutas activas en FRSW1:**
 
@@ -125,13 +125,13 @@ En R4, `show frame-relay map` mostró el mapa hacia 10.0.0.2:
 
 ![Mapa Frame Relay activo de R4 hacia R5](img/05-mapa-R4.png)
 
-La interfaz estaba activa y tenía un mapa estático hacia R5 por el DLCI 100. La opción `broadcast` permite enviar por ese circuito el tráfico de difusión y multidifusión que corresponda. [Cisco: mapas Frame Relay y opción broadcast](https://www.cisco.com/c/en/us/support/docs/wan/frame-relay/16563-12.html).
+El mapa de R4 estaba activo y relacionaba la IP de R5 con el DLCI 100. `broadcast` permite enviar por ese circuito los mensajes de difusión necesarios. [Cisco: mapas Frame Relay y opción broadcast](https://www.cisco.com/c/en/us/support/docs/wan/frame-relay/16563-12.html).
 
 En R5 comprobé el mapa de regreso hacia 10.0.0.1 con el mismo comando:
 
 ![Mapa Frame Relay activo de R5 hacia R4](img/06-mapa-R5.png)
 
-Así confirmé que cada router tiene un mapa activo hacia la IP del otro.
+Los dos mapas aparecieron activos.
 
 ### Ping en ambos sentidos
 
@@ -143,7 +143,7 @@ Desde R5 repetí el ping hacia 10.0.0.1 y también recibí **5 de 5 respuestas**
 
 ![Ping de R5 a R4 con resultado del 100 %](img/07-ping-R5-R4.png)
 
-Con estas pruebas comprobé que R4 y R5 podían comunicarse a través de los dos switches.
+Los pings confirmaron que R4 y R5 se comunican en ambos sentidos.
 
 ---
 
@@ -153,19 +153,19 @@ Con estas pruebas comprobé que R4 y R5 podían comunicarse a través de los dos
 
 **1. ¿Por qué los routers R4 y R5 utilizan DLCI 100?**
 
-Porque ese fue el número asignado al circuito en cada enlace hacia la nube. Pueden usar el mismo número porque el DLCI tiene significado local. No es obligatorio que ambos extremos tengan el mismo valor.
+Porque en cada enlace hacia la nube se usó el DLCI 100. El número solo tiene valor en su propio enlace, por eso puede repetirse en R4 y R5.
 
 **2. ¿Por qué el enlace entre FRSW1 y FRSW2 utiliza DLCI 50?**
 
-Porque se eligió el 50 para identificar el circuito en ese enlace. Los switches tienen las asociaciones necesarias para pasar de 100 a 50 y de 50 a 100.
+Porque el DLCI 50 identifica el circuito entre los dos switches. Las rutas de cada switch permiten cambiar entre 100 y 50.
 
 **3. ¿Por qué el DLCI no debe interpretarse como una dirección IP?**
 
-Porque identifica un circuito virtual de capa 2 dentro de un enlace. La IP identifica una interfaz en una red de capa 3, como 10.0.0.1 en R4. [Cisco: significado local del DLCI](https://www.cisco.com/c/en/us/support/docs/wan/frame-relay/16563-12.html).
+Porque el DLCI identifica el circuito que se usa en un enlace, mientras que la IP identifica la interfaz del router dentro de la red. [Cisco: significado local del DLCI](https://www.cisco.com/c/en/us/support/docs/wan/frame-relay/16563-12.html).
 
 **4. ¿Qué función cumple el cambio de DLCI dentro de la nube?**
 
-Permite que cada switch use el identificador asignado al siguiente enlace y envíe la trama hacia su destino. En esta práctica el recorrido es 100 → 50 → 100.
+Permite que la trama avance por cada enlace con el número que le corresponde. Aquí el recorrido es **100 → 50 → 100**.
 
 ### Actividad 2. Análisis del comando de conmutación
 
@@ -180,30 +180,29 @@ frame-relay route 100 interface Serial1/0 50
 | 1. ¿Cuál es el DLCI de entrada? | 100, en la interfaz donde se configura el comando; en esta práctica, Serial1/1. |
 | 2. ¿Por cuál interfaz sale la trama? | Por Serial1/0. |
 | 3. ¿Cuál es el DLCI de salida? | 50. |
-| 4. ¿Qué ocurriría si se omite la asociación de retorno? | Faltaría el camino de regreso. Un ping no se completaría porque necesita que vuelva la respuesta. |
+| 4. ¿Qué ocurriría si se omite la asociación de retorno? | La respuesta no tendría una ruta de regreso y el ping fallaría. |
 
 La asociación de retorno se configura en Serial1/0 con `frame-relay route 50 interface Serial1/1 100`. [Cisco: conmutación Frame Relay](https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/wan_frly/configuration/12-4t/wan-frly-12-4t-book/wan-cfg-frm-rly.html).
 
 ### Actividad 3. Diagnóstico de errores
 
-Si el mapa de R4 aparece activo, pero el ping hacia R5 falla, seguiría esta secuencia:
+Si el mapa de R4 está activo, pero el ping a R5 falla, revisaría esto en orden:
 
 | Paso | Comando y equipo | Qué revisaría |
 | --- | --- | --- |
-| 1 | `show ip interface brief` en los cuatro equipos | Que las seriales usadas estén up/up y que R4 y R5 tengan las IP correctas. Esto permite detectar interfaces apagadas o direcciones equivocadas. |
-| 2 | `show interfaces Serial1/0` en R4 y R5 | La encapsulación Frame Relay, el estado del protocolo y los contadores de errores. Así revisaría si el problema está en el enlace. |
-| 3 | `show frame-relay map` en R4 y R5 | Que cada IP remota esté asociada al DLCI 100 y aparezca activa. El mapa correcto de R4 no confirma el de R5. |
-| 4 | `show frame-relay route` en FRSW1 y FRSW2 | Que existan las dos asociaciones 100 ↔ 50 con las interfaces correctas. Esto permite detectar una ruta de retorno faltante. |
-| 5 | `show running-config` en los cuatro equipos | La máscara, los mapas y cualquier diferencia con la guía. Si lo anterior está bien, también revisaría si hay alguna lista de acceso bloqueando ICMP. |
-| 6 | `ping 10.0.0.2` desde R4 y `ping 10.0.0.1` desde R5 | Repetiría la prueba después de corregir el problema para comprobar ambos sentidos. |
+| 1 | `show ip interface brief` en los cuatro equipos | Si las interfaces están activas y las IP son correctas, descarto una interfaz apagada o una IP mal puesta. |
+| 2 | `show interfaces Serial1/0` en R4 y R5 | Si aparece Frame Relay y no hay errores en la interfaz, descarto un problema básico en ese enlace. |
+| 3 | `show frame-relay map` en R4 y R5 | Si cada IP está asociada al DLCI 100 y los mapas están activos, descarto un mapa incorrecto en los routers. |
+| 4 | `show frame-relay route` en FRSW1 y FRSW2 | Si están activas las rutas de ida y regreso, descarto que falte la ruta de retorno en la nube. |
+| 5 | `ping 10.0.0.2` desde R4 y `ping 10.0.0.1` desde R5 | Repito los pings para comprobar si la corrección funcionó en ambos sentidos. |
 
-Estos comandos permiten revisar el enlace, los circuitos y la comunicación IP por separado. [Cisco: diagnóstico de Frame Relay](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1918.html).
+[Cisco: comandos para revisar fallas en Frame Relay](https://www.cisco.com/en/US/docs/internetworking/troubleshooting/guide/tr1918.html).
 
 ### Actividad 4. Modificación del laboratorio
 
-Propongo agregar **R6** como tercera sede y conectar su Serial1/0 a Serial1/2 de FRSW2. Esta es una propuesta; no la ejecuté en la práctica.
+Agregaría **R6** como tercera sede y lo conectaría a Serial1/2 de FRSW2. Esta parte es una propuesta; no la configuré en GNS3.
 
-Cambiaría la máscara de las seriales de R4 y R5 a **255.255.255.248 (/29)** y asignaría **10.0.0.3/29** a R6. La red 10.0.0.0/29 permite las direcciones .1 a .6. Con la máscara /30 original, .3 era la dirección de broadcast y no servía para otro router.
+Cambiaría la máscara de R4 y R5 a **255.255.255.248 (/29)** para poder darle **10.0.0.3/29** a R6. Con la máscara original (/30), la dirección .3 no se podía usar para otro router.
 
 | Router | IP propuesta en Serial1/0 | Mapa nuevo para llegar a la otra sede |
 | --- | --- | --- |
@@ -211,7 +210,7 @@ Cambiaría la máscara de las seriales de R4 y R5 a **255.255.255.248 (/29)** y 
 | R5 | 10.0.0.2/29 | 10.0.0.3 por DLCI 101 |
 | R6 | 10.0.0.3/29 | 10.0.0.1 por DLCI 200 y 10.0.0.2 por DLCI 201 |
 
-Mantendría el circuito existente entre R4 y R5. Para los nuevos mapas usaría `frame-relay map ip <IP remota> <DLCI> broadcast` con los valores de la tabla. R6 sería DTE y Serial1/2 de FRSW2 sería DCE; ambas interfaces usarían `encapsulation frame-relay` y `no shutdown`.
+Dejaría el circuito de R4 a R5 como está. Para los mapas nuevos usaría `frame-relay map ip <IP remota> <DLCI> broadcast` con los valores de la tabla. R6 sería DTE y la interfaz de FRSW2 conectada a él sería DCE. En ambas pondría `encapsulation frame-relay` y `no shutdown`.
 
 Agregaría estas asociaciones en los switches:
 
@@ -224,7 +223,7 @@ Agregaría estas asociaciones en los switches:
 | FRSW2 | Serial1/1 | `frame-relay route 101 interface Serial1/2 201` |
 | FRSW2 | Serial1/2 | `frame-relay route 201 interface Serial1/1 101` |
 
-Así, R4 llegaría a R6 por los DLCI **101 → 51 → 200**. R5 llegaría a R6 dentro de FRSW2 por **101 → 201**. Cada recorrido tiene su asociación de regreso.
+Con estas rutas, R4 llegaría a R6 por **101 → 51 → 200**, y R5 llegaría por **101 → 201**. También incluí las rutas de regreso.
 
 Para comprobarlo usaría `show frame-relay route` en los switches y `show frame-relay map` en los tres routers. Haría `ping 10.0.0.3` desde R4 y R5; desde R6 probaría `ping 10.0.0.1` y `ping 10.0.0.2`.
 
@@ -246,4 +245,4 @@ Para comprobarlo usaría `show frame-relay route` en los switches y `show frame-
 
 ## 5. Conclusión
 
-Entendí que la IP y el DLCI cumplen funciones distintas: la IP identifica una interfaz del router dentro de la red y el DLCI indica el circuito que se usa en cada enlace. También comprobé que se necesitan las rutas de ida y regreso. Al final, los mapas y las rutas quedaron activos y los pings respondieron 5 de 5 en ambos sentidos.
+Aprendí que la IP identifica una interfaz del router y el DLCI indica el circuito que usa cada enlace. Las rutas de ida y regreso quedaron activas y los pings respondieron 5 de 5 en los dos sentidos.
