@@ -24,13 +24,81 @@ Conecté los routers R4 y R5 por medio de FRSW1 y FRSW2, que funcionan como la n
 | FRSW2 | Serial1/1 | Sin IP | Hacia R5, DCE, DLCI 100 |
 | R5 | Serial1/0 | 10.0.0.2/30 | Cliente DTE, DLCI 100 |
 
-Activé `frame-relay switching` en los dos switches. En las interfaces seriales configuré `encapsulation frame-relay` y el tipo de interfaz correspondiente. En cada switch agregué las rutas de ida y regreso entre los DLCI 100 y 50.
+### Configuración de R4
 
-En R4 asocié la IP 10.0.0.2 con el DLCI 100, y en R5 asocié 10.0.0.1 con el mismo DLCI local. Habilité las interfaces con `no shutdown` y guardé la configuración de los cuatro equipos.
+Le asigné la IP 10.0.0.1 a la interfaz que va hacia FRSW1. El mapa indica que para llegar a R5 (10.0.0.2) debe usar el DLCI 100.
+
+```cisco
+configure terminal
+interface Serial1/0
+ ip address 10.0.0.1 255.255.255.252
+ encapsulation frame-relay
+ frame-relay map ip 10.0.0.2 100 broadcast
+ no shutdown
+end
+write memory
+```
+
+### Configuración de FRSW1
+
+Habilité la conmutación Frame Relay. Serial1/1 recibe las tramas de R4 con DLCI 100 y las envía a FRSW2 por Serial1/0 con DLCI 50. La segunda ruta permite el regreso.
+
+```cisco
+configure terminal
+frame-relay switching
+interface Serial1/0
+ encapsulation frame-relay
+ frame-relay intf-type nni
+ frame-relay route 50 interface Serial1/1 100
+ no shutdown
+interface Serial1/1
+ encapsulation frame-relay
+ frame-relay intf-type dce
+ frame-relay route 100 interface Serial1/0 50
+ no shutdown
+end
+write memory
+```
+
+### Configuración de FRSW2
+
+Este switch recibe el circuito desde FRSW1 por Serial1/0 y lo entrega a R5 por Serial1/1. También tiene la ruta contraria para que R5 pueda responder.
+
+```cisco
+configure terminal
+frame-relay switching
+interface Serial1/0
+ encapsulation frame-relay
+ frame-relay intf-type nni
+ frame-relay route 50 interface Serial1/1 100
+ no shutdown
+interface Serial1/1
+ encapsulation frame-relay
+ frame-relay intf-type dce
+ frame-relay route 100 interface Serial1/0 50
+ no shutdown
+end
+write memory
+```
+
+### Configuración de R5
+
+Le asigné la IP 10.0.0.2 a la interfaz conectada con FRSW2. Su mapa usa el DLCI 100 para enviar tráfico hacia R4 (10.0.0.1).
+
+```cisco
+configure terminal
+interface Serial1/0
+ ip address 10.0.0.2 255.255.255.252
+ encapsulation frame-relay
+ frame-relay map ip 10.0.0.1 100 broadcast
+ no shutdown
+end
+write memory
+```
 
 Durante la configuración, `frame-relay intf-type` no se reconocía porque faltaba aplicar `encapsulation frame-relay` en la interfaz. Después de agregarlo, aparecieron las opciones DTE, DCE y NNI.
 
-**Configuraciones guardadas:** [R4](configs/R4.cfg), [R5](configs/R5.cfg), [FRSW1](configs/FRSW1.cfg) y [FRSW2](configs/FRSW2.cfg).\
+**Configuraciones completas guardadas:** [R4](configs/R4.cfg), [R5](configs/R5.cfg), [FRSW1](configs/FRSW1.cfg) y [FRSW2](configs/FRSW2.cfg).\
 **Proyecto:** [Frame Relay en GNS3](FrameRelay-JulianMoreno.gns3project). Para abrirlo se necesita la imagen `c7200-a3jk9s-mz.124-25g.image` instalada en GNS3.
 
 ---
