@@ -1,11 +1,3 @@
----
-title: "Guia Lab 01 fortigate VM JON"
-source_file: "Guia_Lab_01_fortigate_VM_JON.docx"
-format: "docx"
-converted_date: "2026-10-31T20:18:34.161Z"
-extracted_images_count: 19
----
-
 # Guia Lab 01 fortigate VM JON
 
 https://medium.com/@dhruvpatel1112002/%EF%B8%8F-installing-fortigate-firewall-vm-free-evaluation-on-vmware-setting-up-syslog-on-ubuntu-d519961f9714
@@ -164,31 +156,3 @@ Se cierra aceptando cambios.
 
 *Figura 18: Imagen 1*
 
-Configure FortiGate to Send Logs to Ubuntu
-
-Now go to fortigate firewall vm for this configuration
-
-Now we tell FortiGate where to send its logs.
-
-CLI:
-
-
-![Figura 19 referente a Imagen 1](./images/fig-19-imagen-1.png)
-
-*Figura 19: Imagen 1*
-
-Nota:  La ip configurada corresponde a un servidor, en este caso la MV Centos sobre la que previamente se habilitó syslog;  por ende su dirección debe ser de tipo estático.
-
-Para efectos de  este laboratorio, sólo se validará el soporte de Rsyslog; toda vez que para efectos prácticos
-
-What’s Coming in Part 3
-
-In Part 3, we’ll take this lab even further by:
-
-Integrating FortiGate logs with a SIEM (ELK / Elastic)
-
-Searching and filtering logs
-
-Detecting suspicious activity
-
-Understanding how SOC analysts investigate incidents using logs
