@@ -110,13 +110,32 @@ Configure lo solicitado:, según aplique.
 
 rsyslog es un demonio (servicio) de código abierto para sistemas Linux/Unix que gestiona el envío, recepción, filtrado y almacenamiento de logs del sistema. Es una versión mejorada y más potente del clásico syslog.
 
+CentOS Stream 10 incluye `rsyslog` en sus repositorios oficiales base.
+
+1. Se actualiza el índice de paquetes e instala el paquete:
+```bash
+sudo dnf install -y rsyslog
+
+```
+
+
+2. Se habilita el demonio para el arranque del sistema y se inicia inmediatamente:
+```bash
+sudo systemctl enable --now rsyslog
+
+```
+
+
+3. Se verifica que el servicio esté activo y sin fallos:
+```bash
+sudo systemctl status rsyslog
+
+```
+
+
+*Verificación:* El estado debe mostrarse en color verde como `active (running)`.
 -  Instalación sobre Centos.
   
-```bash
-sudo apt update
-sudo apt upgrade -y
-sudo dnf install -y Rsyslog
-```
 
 ![Figura 11 referente a Imagen 1](./images/fig-11-imagen-1.png)
 
@@ -152,7 +171,7 @@ Crear copia antes de modificación alguna.
 *Figura 16: Imagen 1*
 
 **Envío remoto:**
-
+o
 
 ![Figura 17 referente a Imagen 1](./images/fig-17-imagen-1.png)
 
