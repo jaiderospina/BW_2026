@@ -104,10 +104,19 @@ Configure lo solicitado:, según aplique.
 
 *Figura 10: Imagen 1*
 
-Ampliación de servicios.
+**Ampliación de servicios.**
 
-dnf install -y Rsyslog
+**rsyslog**
 
+rsyslog es un demonio (servicio) de código abierto para sistemas Linux/Unix que gestiona el envío, recepción, filtrado y almacenamiento de logs del sistema. Es una versión mejorada y más potente del clásico syslog.
+
+-  Instalación sobre Centos.
+  
+```bash
+sudo apt update
+sudo apt upgrade -y
+sudo dnf install -y Rsyslog
+```
 
 ![Figura 11 referente a Imagen 1](./images/fig-11-imagen-1.png)
 
