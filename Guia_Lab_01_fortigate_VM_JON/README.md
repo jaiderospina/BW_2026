@@ -151,7 +151,7 @@ Crear copia antes de modificación alguna.
 
 *Figura 16: Imagen 1*
 
-Envío remoto:
+**Envío remoto:**
 
 
 ![Figura 17 referente a Imagen 1](./images/fig-17-imagen-1.png)
@@ -164,4 +164,21 @@ Se cierra aceptando cambios.
 ![Figura 18 referente a Imagen 1](./images/fig-18-imagen-1.png)
 
 *Figura 18: Imagen 1*
+
+---
+
+## Configurar Fortigate para el servicio.
+
+![Figura 18 referente a Imagen 1](./images/fig-19-imagen-1.png)
+
+*Figura 19: Imagen 1*
+
+Nota:  La ip configurada corresponde a un servidor, en este caso la MV Centos sobre la que previamente se habilitó syslog;  por ende su dirección debe ser de tipo **estático**. 
+
+Para efectos de  este laboratorio, sólo se validará el soporte de Rsyslog; toda vez que para efectos prácticos un Fortigate se integraría a un SIEM (ELKElastic), como elemntos de cibersegurida encargados de:
+
+- Buscar y filtrar losg.
+- Detectar actividad maliciosa.
+- Brindar base de conocimiento para analistas **SOC** ye informática forense.
+
 
