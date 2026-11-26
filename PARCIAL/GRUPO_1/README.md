@@ -13,6 +13,7 @@ Esta entrega reúne el diseño, los pasos de configuración y los resultados del
 | Material | Archivo o carpeta |
 | --- | --- |
 | Informe | [Word](Informe_Proyecto_SD_WAN_Grupo_1.docx) · [PDF](Informe_Proyecto_SD_WAN_Grupo_1.pdf) |
+| Documentación por fases | [Recorrido ilustrado con 33 capturas](Documentacion_por_fases.md) · [Anexo Word](Anexo_Documentacion_Fases_Grupo_1.docx) · [Anexo PDF](Anexo_Documentacion_Fases_Grupo_1.pdf) |
 | Diagrama lógico | [Imagen](Diagrama_logico.png) · [Descripción](Diagrama_logico.md) |
 | Evidencias | [Capturas originales 01–70](img/) · [Registros de comprobación](registros/) |
 | Configuraciones | [Scripts y archivos de configuración](configs/) |
@@ -20,6 +21,8 @@ Esta entrega reúne el diseño, los pasos de configuración y los resultados del
 | Organización | [Cronograma](Cronograma.md) |
 
 **Pendientes de la entrega:** recibir y verificar la exportación actualizada de GNS3 y añadir el video de funcionamiento. El respaldo de una etapa anterior no sustituye la topología completa.
+
+La [documentación por fases](Documentacion_por_fases.md) amplía el proceso con 33 capturas seleccionadas. Recorre DHCP y LAN, los dos enlaces WAN, calidad y fallos, preparación del DC, sucursal y GRE, corrección del acceso HTTP, caída y retorno del DC, nube, QoS, seguridad y supervisión central. Cada fase explica lo que hicimos, sus comandos, las imágenes y el resultado. Los fallos intermedios se identifican como parte del procedimiento.
 
 ## 1. Resumen ejecutivo
 

@@ -2,6 +2,8 @@
 
 El informe principal utiliza estas ocho capturas y el [diagrama lógico](../Diagrama_logico.png). Se eligieron por su legibilidad y porque cada una aporta una comprobación diferente. Los 70 originales permanecen en esta carpeta para consultar los ensayos y sus cambios.
 
+El [anexo de documentación por fases](../Documentacion_por_fases.md) integra 33 capturas para mostrar también la preparación, las configuraciones, los problemas encontrados y sus comprobaciones. Cada imagen tiene una explicación vinculada a la fase donde se utilizó. Está disponible además en [Word](../Anexo_Documentacion_Fases_Grupo_1.docx) y [PDF](../Anexo_Documentacion_Fases_Grupo_1.pdf).
+
 | Evidencia | Qué se observa | Cómo se interpreta |
 | --- | --- | --- |
 | [27 DHCP LAN Internet y DNS](27-PC1-DHCP-LAN-Internet-DNS-verificacion.png) | Concesión DHCP de PC1 y respuestas del gateway, una IP externa y un nombre. | Es una prueba histórica con PC1 en 10.10.10.100; la última concesión registrada fue 10.10.10.101. Al repetir, primero se ejecuta ip dhcp y después show ip. |
