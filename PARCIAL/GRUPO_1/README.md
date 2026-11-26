@@ -8,7 +8,7 @@
 **Integrantes:** Julián Camilo Moreno Valderrama, Fabiana Lopez Piñeros y Juan Felipe Becerra Briceño.  
 **Fecha de corte:** 25 de noviembre de 2026.
 
-Esta entrega reúne el diseño, los pasos de configuración y los resultados del laboratorio en GNS3. Se diferencian las comprobaciones realizadas de las actividades que siguen pendientes.
+En este informe explicamos cómo conectamos la sede, la sucursal y la nube simulada en GNS3. Presentamos la configuración paso a paso, las pruebas y sus resultados. El servicio del centro de datos se recuperó por el camino de respaldo; las mediciones de QoS no mostraron descargas más rápidas. Las capturas y los registros permiten revisar ambos resultados.
 
 | Material | Archivo o carpeta |
 | --- | --- |
@@ -22,15 +22,15 @@ Esta entrega reúne el diseño, los pasos de configuración y los resultados del
 
 **Pendientes de la entrega:** recibir y verificar la exportación actualizada de GNS3 y añadir el video de funcionamiento. El respaldo de una etapa anterior no sustituye la topología completa.
 
-La [documentación por fases](Documentacion_por_fases.md) amplía el proceso con 33 capturas seleccionadas. Recorre DHCP y LAN, los dos enlaces WAN, calidad y fallos, preparación del DC, sucursal y GRE, corrección del acceso HTTP, caída y retorno del DC, nube, QoS, seguridad y supervisión central. Cada fase explica lo que hicimos, sus comandos, las imágenes y el resultado. Los fallos intermedios se identifican como parte del procedimiento.
+La [documentación por fases](Documentacion_por_fases.md) reúne 33 capturas seleccionadas, desde la preparación de la LAN hasta la supervisión central. Cada fase explica qué configuramos, qué comandos usamos y qué ocurrió en la prueba. También incluye los intentos que fallaron y las correcciones que después comprobamos.
 
 ## 1. Resumen ejecutivo
 
-Se implementó una sede con Data Center, una sucursal y una aplicación de nube simulada. Dos FortiGate conectan las redes mediante túneles GRE sobre dos transportes WAN. Se comprobó el acceso HTTP al DC y a la nube, la recuperación de la aplicación por el túnel de respaldo y el retorno al camino principal. También se verificó que HTTP en TCP 80 estuviera disponible desde la sucursal mientras un servicio temporal en TCP 8080 no era accesible desde allí.
+Implementamos una sede con centro de datos (DC), una sucursal y una aplicación de nube simulada. Dos FortiGate conectan las redes mediante túneles GRE y dos caminos WAN. Comprobamos el acceso web al DC y a la nube. Al desactivar el camino principal, el servicio del DC se recuperó por el túnel de respaldo; al restablecerlo, volvió a la ruta principal. Desde la sucursal también comprobamos que HTTP en TCP 80 estuviera disponible y que un servicio temporal en TCP 8080 no fuera accesible.
 
-La regla SD-WAN de HTTP hacia la nube registró una coincidencia al usar el destino enrutado `10.30.10.10`. El perfil de QoS apareció asignado a una sesión, aunque las descargas medidas no fueron más rápidas. La supervisión central obtuvo seis lecturas en una ejecución guardada y tres en una revisión posterior, en la que la consola de sede no estaba lista.
+La regla SD-WAN para HTTP hacia la nube registró una coincidencia con el destino enrutado `10.30.10.10`. El perfil de calidad de servicio (QoS) apareció asignado a una sesión, aunque las descargas medidas no fueron más rápidas. La consulta central guardada obtuvo seis lecturas de estado. En una revisión posterior se completaron tres, porque la consola de la sede no estaba lista.
 
-GRE permitió conectar los sitios, pero **no se demostró cifrado**. El script central consulta el estado de los equipos; no distribuye políticas. Estos límites forman parte del resultado y de las mejoras propuestas.
+Los túneles GRE transportaron los paquetes entre los sitios; **no se demostró cifrado**. El script central consulta el estado de los equipos y no distribuye políticas. Por eso, las conclusiones distinguen la comunicación que comprobamos de las funciones que todavía faltan implementar o evaluar.
 
 ## 2. Problema y objetivos
 
@@ -46,13 +46,13 @@ Una sucursal que depende de un solo enlace puede perder acceso a sus aplicacione
 - Aplicar políticas de firewall y evaluar un perfil de QoS.
 - Conservar capturas, comandos y registros que permitan revisar los resultados.
 
-SD-WAN permite supervisar la calidad de los enlaces y aplicar reglas de selección. En este montaje, la recuperación hacia el DC también depende de rutas con distinta distancia administrativa y del estado de los túneles GRE; no se atribuye todo el comportamiento a una única regla.
+SD-WAN permite revisar la calidad de los enlaces y elegir por dónde enviar el tráfico según reglas. En este montaje, el acceso al DC también depende de la preferencia de las rutas, expresada como distancia administrativa, y del estado de los túneles GRE. La recuperación observada se explica con estos elementos; no se atribuye a una sola regla SD-WAN.
 
 ## 3. Diseño de la solución
 
 ![Diagrama lógico del grupo 1](Diagrama_logico.png)
 
-La sede tiene una LAN de usuarios y un segmento independiente para el DC. La sucursal tiene su propia LAN. Los FortiGate sirven como equipos de borde y firewalls. El primer transporte usa el NAT de GNS3; el segundo utiliza nodos Cloud conectados a VMnet8. Ambos transportes están dentro del mismo entorno de virtualización y no equivalen a dos operadores físicos independientes.
+La sede tiene una red local (LAN) para los usuarios y otra red para el DC. La sucursal tiene su propia LAN. Los FortiGate conectan estas redes con la WAN y controlan el tráfico mediante reglas de firewall. El primer camino usa el NAT de GNS3; el segundo utiliza nodos Cloud conectados a VMnet8. Ambos funcionan en el mismo entorno de virtualización, por lo que no representan dos operadores físicos independientes.
 
 `GRE-ISP1` es el camino preferido hacia el DC y `GRE-ISP2` es el respaldo. Se representa una red WAN de laboratorio; no se implementó un núcleo MPLS real.
 
@@ -66,7 +66,7 @@ La sede tiene una LAN de usuarios y un segmento independiente para el DC. La suc
 | CLOUD-SRV | Servir la página de la nube simulada. |
 | Script de gestión | Consultar miembros SD-WAN, salud WAN y keepalive GRE de los dos FortiGate. |
 
-Los servidores usan contenedores y BusyBox httpd. CLOUD-EDGE también utiliza un relay socat para publicar TCP 80. La nube es una red separada dentro del laboratorio, sin contratación de una plataforma externa. No se implementó un orquestador que distribuya configuraciones: cada FortiGate se configuró individualmente.
+Los servidores funcionan en contenedores y entregan sus páginas web con BusyBox httpd. CLOUD-EDGE usa además socat para reenviar las conexiones al servicio en TCP 80. La nube es una red separada dentro del laboratorio; no se contrató una plataforma externa. Configuramos cada FortiGate por separado. No se implementó una herramienta central que distribuyera sus configuraciones.
 
 ### Direccionamiento
 
@@ -91,7 +91,7 @@ Las direcciones WAN y la dirección frontal de CLOUD-EDGE deben revisarse al rec
 
 ### Paso 1. Preparar la LAN y comprobar salida a Internet
 
-En port2 de cada FortiGate se definieron la puerta de enlace y el servicio DHCP de su LAN. También se configuraron políticas de salida con NAT. Después se comprobó que los clientes recibieran dirección y alcanzaran su gateway. Desde PC1 se verificaron además `8.8.8.8` y `google.com`.
+En port2 de cada FortiGate configuramos la puerta de enlace o gateway de su LAN y el servicio DHCP que entrega direcciones a los clientes. También configuramos políticas de salida con NAT. Después comprobamos que los clientes recibieran una dirección y pudieran comunicarse con su gateway. Desde PC1 probamos además `8.8.8.8` y `google.com`.
 
 **Para comenzar las pruebas, primero se pide DHCP en cada VPCS**, tanto en PC1 como en PC-SUC:
 
@@ -123,7 +123,7 @@ La captura anterior corresponde a una concesión de una prueba previa; las IP ac
 
 ### Paso 2. Configurar y supervisar los dos transportes WAN
 
-La sede usa port1 y port3 como miembros SD-WAN. El monitor `Internet_LAB` consulta `8.8.8.8` y `1.1.1.1`, con umbrales de 100 ms de latencia, 30 ms de jitter y 5 % de pérdida. La selección Lowest Cost utiliza costos 10 y 20. FG-SUC tiene sus miembros WAN y la regla general `SUC_SLA`.
+En la sede, port1 y port3 son los enlaces incluidos en SD-WAN. El monitor SLA `Internet_LAB` comprueba su calidad consultando `8.8.8.8` y `1.1.1.1`. Configuramos límites de 100 ms de latencia, 30 ms de jitter o variación del retardo, y 5 % de pérdida de paquetes. La selección Lowest Cost usa los costos 10 y 20 para establecer la preferencia. FG-SUC tiene sus enlaces WAN y la regla general `SUC_SLA`.
 
 Para revisar el estado se utilizaron estos diagnósticos de FortiOS:
 
@@ -136,16 +136,16 @@ El [estado normal de ambos ISP](img/28-SLA-ambos-ISP-verificacion.png) se conser
 
 ### Paso 3. Integrar el DC y los túneles GRE
 
-Se configuró el DC en port4 de la sede y el servidor `10.10.20.10`. Los túneles GRE permiten alcanzar esa red desde sucursal. La ruta preferida usa GRE-ISP1 con distancia administrativa 10; la alternativa usa GRE-ISP2 con distancia 20.
+Configuramos la red del DC en port4 de la sede y asignamos `10.10.20.10` al servidor. Los túneles GRE permiten llegar a esa red desde la sucursal. La ruta preferida usa GRE-ISP1 con distancia administrativa 10; la alternativa usa GRE-ISP2 con distancia 20.
 
-Para revisar la ruta elegida y el estado del túnel se usaron:
+Para revisar la ruta elegida y los mensajes keepalive que comprueban el estado del túnel, usamos:
 
 ```text
 get router info routing-table details 10.10.20.10
 diagnose sys gre keepalive all
 ```
 
-El diagnóstico de tráfico mostró entrada por GRE-ISP1, salida por port4 y respuestas en sentido contrario, conservando las direcciones de los extremos.
+El diagnóstico de tráfico mostró que los paquetes llegaban por GRE-ISP1 y salían por port4 hacia el DC. Las respuestas regresaban en sentido contrario y se conservaban las direcciones de los extremos.
 
 ![Tráfico GRE entre sucursal y DC sin traducción de direcciones](img/42-GRE-trafico-sucursal-DC-sin-NAT.png)
 
@@ -153,7 +153,7 @@ Aquí PC-SUC aparece con la IP estática histórica `10.20.10.10`. La captura ac
 
 ### Paso 4. Habilitar y probar la aplicación HTTP del DC
 
-Se inició la página del DC con BusyBox httpd. Al principio, FG-SUC permitía PING pero la petición HTTP fallaba. Se amplió `SUC_PING_DC` a PING y HTTP; la política `GRE_PING_DC` de la sede ya permitía ambos servicios.
+Iniciamos la página del DC con BusyBox httpd. Al principio, el ping funcionaba, pero la petición HTTP fallaba. Revisamos FG-SUC y encontramos que `SUC_PING_DC` solo permitía PING. Añadimos HTTP a esa política; `GRE_PING_DC`, en la sede, ya permitía ambos servicios.
 
 En FG-SUC se añadió HTTP a la regla 2 existente:
 
@@ -187,17 +187,17 @@ curl --noproxy "*" -fsS --max-time 5 -D - http://10.10.20.10/
 
 ![Respuesta HTTP del DC desde la sucursal](img/48-Sucursal-HTTP-DC.png)
 
-Los archivos de interfaces y los scripts guardados permiten recuperar direcciones, rutas e inicio de httpd. Tras detener y arrancar los contenedores, DC-SRV y el cliente de sucursal volvieron a obtener HTTP 200. El [registro posterior al arranque](registros/verification-after-restart.json) conserva esa comprobación.
+Los archivos de interfaces y los scripts guardados permiten recuperar las direcciones, las rutas y el arranque de httpd. Después de detener y arrancar los contenedores, las pruebas en DC-SRV y en el cliente de sucursal volvieron a recibir HTTP 200, código que indica que el servidor atendió la solicitud. El [registro posterior al arranque](registros/verification-after-restart.json) conserva esa comprobación.
 
 ### Paso 5. Separar servicios permitidos y restringidos
 
-Se habilitó temporalmente HTTP en TCP 8080 en el propio DC y se comprobó que respondiera localmente. Desde sucursal, TCP 80 devolvió 200 y TCP 8080 agotó la espera después de 3001 ms. El servicio temporal se retiró al terminar.
+Habilitamos un servicio HTTP temporal en TCP 8080 en el DC y comprobamos su respuesta desde el propio servidor. Después probamos desde la sucursal: TCP 80 devolvió 200 y TCP 8080 agotó la espera después de 3001 ms. Retiramos el servicio temporal al terminar.
 
-La prueba demuestra acceso selectivo de extremo a extremo. No permite identificar cuál de los dos FortiGate descartó TCP 8080 porque esa ejecución no conservó el registro de descarte del firewall. Los comandos y las respuestas están en [TCP 80 frente a TCP 8080](registros/tcp-80-vs-8080.json).
+El resultado muestra que desde la sucursal se podía acceder a un servicio y al otro no. Esa ejecución no conservó el registro de descarte del firewall, por lo que no permite identificar cuál de los dos FortiGate descartó TCP 8080. Los comandos y las respuestas están en [TCP 80 frente a TCP 8080](registros/tcp-80-vs-8080.json).
 
 ### Paso 6. Comprobar caída, recuperación y retorno
 
-Se desactivó administrativamente ISP1 en FG-SUC mientras se repetían peticiones HTTP al DC. Después de varios intentos fallidos, volvió el servicio mediante GRE-ISP2.
+Desactivamos ISP1 desde la configuración de FG-SUC mientras repetíamos peticiones HTTP al DC. Después de varios intentos fallidos, el servicio volvió a responder mediante GRE-ISP2.
 
 ![Peticiones HTTP durante el cambio al respaldo](img/51-HTTP-durante-conmutacion-a-ISP2.png)
 
@@ -205,13 +205,13 @@ Se desactivó administrativamente ISP1 en FG-SUC mientras se repetían peticione
 
 Hubo HTTP 200 a las 01:28:08; el primer intento fallido comenzó a las 01:28:09 y el primer intento nuevamente exitoso a las 01:28:16. Los **7 segundos** son el intervalo entre el inicio de esos dos intentos, no una medición exacta desde el instante en que cayó el enlace.
 
-Al habilitar de nuevo ISP1 se recuperó el keepalive y se reinstaló la ruta por GRE-ISP1. Las peticiones posteriores devolvieron HTTP 200. No se cronometró el retorno. Esta prueba corresponde al acceso al DC; no demuestra recuperación del servicio cloud ante la misma caída.
+Al habilitar de nuevo ISP1, el túnel volvió a responder a los mensajes keepalive y se reinstaló la ruta por GRE-ISP1. Las peticiones posteriores devolvieron HTTP 200. No medimos cuánto tardó ese retorno. La prueba corresponde al acceso al DC; no demuestra que el servicio de nube se recupere ante la misma caída.
 
 ![Retorno de la ruta principal por GRE-ISP1](img/54-Retorno-ruta-GRE-ISP1.png)
 
 ### Paso 7. Integrar la nube y verificar su regla SD-WAN
 
-Primero se probó HTTP a través del frontal `192.168.42.84` de CLOUD-EDGE. El servicio respondió, pero la traza utilizó una ruta directamente conectada por port1 y la regla específica conservó contador cero. Las [capturas 67–69](img/) documentan ese intento y no se usan como prueba de coincidencia de la regla.
+Primero probamos HTTP a través de la dirección frontal `192.168.42.84` de CLOUD-EDGE. El servicio respondió. Sin embargo, la traza mostró una ruta directamente conectada por port1 y el contador de la regla específica siguió en cero. Las [capturas 67–69](img/) documentan ese intento; no prueban que el tráfico coincidiera con la regla.
 
 La comprobación posterior usó `10.30.10.10` como destino y una ruta /32 vía `192.168.42.84`. La regla `HTTP_NUBE_ISP1` registró origen `10.20.10.0/24`, TCP 80, miembro 1 por port1 y `hit_count=1`.
 
@@ -246,7 +246,7 @@ El [archivo de webterm1-2](configs/Referencias-tecnicas/cloud-lab/interfaces-web
 
 ### Paso 8. Aplicar y evaluar QoS
 
-Una sesión del DC mostró `reply-shaper QOS_DC_ALTA` y `shaping_policy_id 1`. Se confirma así la asignación del perfil, según el [diagnóstico de sesión](registros/shaper-session-check.json). Luego se compararon descargas del DC de 4 MiB y de nube de 16 MiB.
+El [diagnóstico de sesión](registros/shaper-session-check.json) mostró `reply-shaper QOS_DC_ALTA` y `shaping_policy_id 1` en una sesión del DC. Esto confirma que se asignó el perfil que regula el ancho de banda, llamado shaper en FortiOS. Para evaluar su efecto, comparamos descargas del DC de 4 MiB y de nube de 16 MiB.
 
 | Ancho declarado | DC de referencia | DC tras priorización | Nube de referencia | Nube tras priorización |
 | --- | ---: | ---: | ---: | ---: |
@@ -255,7 +255,7 @@ Una sesión del DC mostró `reply-shaper QOS_DC_ALTA` y `shaping_policy_id 1`. S
 
 ![Resultados de las descargas de la prueba QoS](img/64-QoS-dos-descargas-completas.png)
 
-Las comparaciones **no mostraron una reducción del tiempo de descarga**. En 4000 kbps, el DC tardó 1.424 s más, equivalente a 6.74 %. La referencia y la priorización de esa corrida se interpretaron según el orden confirmado en el registro; no son una comparación repetida y controlada.
+Las comparaciones **no mostraron una reducción del tiempo de descarga**. En la prueba de 4000 kbps, el DC tardó 1.424 s más, equivalente a 6.74 %. El orden confirmado en el registro permite distinguir la descarga de referencia y la realizada con priorización. Estos datos corresponden a esa ejecución; no se repitió una comparación bajo condiciones controladas.
 
 Diez peticiones HTTP sin carga devolvieron 200, con tiempo total curl promedio de 3.502 ms, mínimo de 2.636 y máximo de 4.258 ms. Estos tiempos HTTP no representan una medición de jitter de red. Para evaluar una mejora de QoS hacen falta varias repeticiones bajo la misma carga y el mismo cuello de botella, con medidas de latencia, pérdida y jitter. Véase también la [comparación de 4 Mbps](registros/comparacion-4Mbps.json).
 
@@ -277,7 +277,7 @@ powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -File .\configs\gestiona
 
 Antes de repetirla deben verificarse la dirección del servidor GNS3, el proyecto y las consolas indicados en el script. Ambas consolas deben mostrar un prompt `#` en blanco; no se debe escribir en ellas durante la consulta.
 
-El [registro guardado](registros/gestion-centralizada-fortigate.txt) completó seis lecturas, tres por equipo. En una revisión posterior solo se completaron las tres de FG-SUC porque la consola de sede quedó sin prompt listo. Aunque hubo otras verificaciones manuales de WAN y GRE, no se presenta esa última ejecución central como seis de seis. El resultado demuestra **supervisión central de solo lectura**, no distribución ni sincronización de políticas.
+El [registro guardado](registros/gestion-centralizada-fortigate.txt) contiene seis lecturas, tres por equipo. En una revisión posterior solo se completaron las tres de FG-SUC, porque la consola de la sede no mostraba el prompt listo. Las otras verificaciones manuales de WAN y GRE no completan esa última consulta central. El resultado demuestra **supervisión central de solo lectura**; no se distribuyeron ni sincronizaron políticas.
 
 ## 5. Balance de las pruebas
 
@@ -296,9 +296,9 @@ La [guía de las ocho capturas principales](img/README.md) explica qué demuestr
 
 ## 6. Conclusiones y trabajo pendiente
 
-Se logró conectar sede, sucursal, Data Center y nube simulada, y comprobar sus aplicaciones mediante HTTP. Las pruebas muestran que la aplicación del DC pudo recuperarse por el túnel alterno y volver al camino principal. También se acreditaron acceso selectivo a servicios, coincidencia de una regla específica de nube y consulta central del estado de los bordes.
+Conectamos la sede, la sucursal, el centro de datos y la nube simulada, y comprobamos sus aplicaciones mediante HTTP. La aplicación del DC se recuperó por el túnel alterno y volvió al camino principal. También comprobamos el acceso selectivo a servicios, la coincidencia de la regla específica de nube y la consulta central del estado de los FortiGate.
 
-El laboratorio permitió distinguir entre una configuración aplicada y un beneficio medido: el shaper aparece en la sesión, pero las descargas no mejoraron. Del mismo modo, tener un túnel GRE no demuestra confidencialidad, y leer los dos equipos desde un script no equivale a distribuir políticas desde un controlador.
+El perfil de QoS quedó asignado a una sesión, pero las descargas no mejoraron. Por eso, su configuración no basta para afirmar que aumentó el rendimiento. Los túneles GRE demostraron comunicación entre redes, sin probar confidencialidad. El script permitió consultar los equipos desde un punto central, aunque las políticas siguieron configurándose en cada FortiGate.
 
 Para cerrar la entrega se necesita:
 

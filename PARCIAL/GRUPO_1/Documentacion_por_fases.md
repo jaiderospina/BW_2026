@@ -3,9 +3,9 @@
 **Grupo 1 · Banda Ancha**  
 **Integrantes:** Juan Felipe Becerra Briceño, Fabiana Lopez Piñeros y Julián Camilo Moreno Valderrama.
 
-Este anexo muestra el procedimiento del laboratorio mediante 33 capturas originales, ordenadas por fases. En cada fase se explica qué hicimos, qué comandos utilizamos y qué resultado se observó. Incluimos los fallos intermedios que ayudaron a encontrar una causa y su comprobación posterior.
+Este anexo explica cómo configuramos y probamos el laboratorio en GNS3. Las 33 capturas originales siguen el orden de las fases: preparación de las redes, conexión de los servicios y comprobación de los resultados. Cada fase incluye los comandos usados y explica qué muestra la evidencia. También se conservan los intentos que fallaron y las comprobaciones posteriores a los ajustes.
 
-Las capturas conservan las direcciones de su prueba. Algunas usan PC1 10.10.10.100 y PC-SUC 10.20.10.10; la revisión final registró DHCP en 10.10.10.101 y 10.20.10.100, respectivamente. Para repetir las pruebas actuales en VPCS, primero se ejecuta ip dhcp, luego show ip y después ping. No se vuelve a fijar una IP antigua solo para copiar la imagen.
+Las capturas conservan las direcciones que tenían los equipos en cada prueba. Algunas muestran PC1 con 10.10.10.100 y PC-SUC con 10.20.10.10. En la revisión final se registraron por DHCP 10.10.10.101 y 10.20.10.100, respectivamente. Para repetir las pruebas en VPCS, primero se ejecuta ip dhcp, luego show ip y después ping. Se usa la dirección recibida en esa nueva prueba, que puede ser distinta de la imagen.
 
 [Informe principal](Informe_Proyecto_SD_WAN_Grupo_1.pdf) · [Anexo en Word](Anexo_Documentacion_Fases_Grupo_1.docx) · [Anexo en PDF](Anexo_Documentacion_Fases_Grupo_1.pdf)
 
@@ -28,7 +28,7 @@ Las capturas conservan las direcciones de su prueba. Algunas usan PC1 10.10.10.1
 
 **LAN, DHCP y salida a Internet**
 
-Se configuró port2 de cada FortiGate como gateway fijo de su LAN y servidor DHCP, junto con las políticas de salida con NAT. En VPCS, el primer paso para comprobar los clientes es pedir DHCP y revisar la concesión; después se prueba el gateway y, desde PC1, Internet y DNS.
+Configuramos port2 de cada FortiGate como puerta de enlace fija de su red local (LAN) y activamos DHCP para entregar direcciones a los clientes. También creamos las políticas de salida con NAT, que traducen las direcciones privadas al salir. Para comprobar cada VPCS, primero pedimos una dirección por DHCP y revisamos los datos recibidos. Después probamos la puerta de enlace y, desde PC1, la salida a Internet y la resolución de nombres por DNS.
 
 **Comandos en VPCS — PC1:**
 
@@ -48,13 +48,13 @@ ping google.com
 
 *Captura 02. La consulta show ip confirma los datos de PC1 y el ping obtiene respuestas de su gateway 10.10.10.1.*
 
-![Captura 03. PC1 obtiene respuestas de 8.8.8.8 y resuelve google.com antes de recibir sus respuestas ICMP.](img/03-PC1-Internet-DNS.png)
+![Captura 03. PC1 recibe respuestas de 8.8.8.8 y resuelve el nombre google.com antes de recibir las respuestas ICMP de ese destino.](img/03-PC1-Internet-DNS.png)
 
-*Captura 03. PC1 obtiene respuestas de 8.8.8.8 y resuelve google.com antes de recibir sus respuestas ICMP.*
+*Captura 03. PC1 recibe respuestas de 8.8.8.8 y resuelve el nombre google.com antes de recibir las respuestas ICMP de ese destino.*
 
-**Resultado:** Las capturas acreditan DHCP, comunicación con el gateway y salida de PC1 a una IP externa y a un nombre. La última revisión registró PC1 en 10.10.10.101/24 y PC-SUC en 10.20.10.100/24, con gateways 10.10.10.1 y 10.20.10.1.
+**Resultado:** Las capturas muestran que PC1 recibió una dirección por DHCP, respondió su puerta de enlace y pudo llegar tanto a una IP externa como a un destino por nombre. La última revisión registró PC1 en 10.10.10.101/24 y PC-SUC en 10.20.10.100/24, con puertas de enlace 10.10.10.1 y 10.20.10.1.
 
-**Aclaración:** Las imágenes 01–03 conservan PC1 en .100 y son históricas; no se deben copiar esas concesiones como direcciones fijas. Para repetir en ambos VPCS se ejecutan primero ip dhcp y show ip; en PC-SUC se comprueba después ping 10.20.10.1.
+**Aclaración:** Las imágenes 01–03 pertenecen a una prueba anterior y conservan PC1 en .100. Esa concesión no debe copiarse como una dirección fija. Para repetir las pruebas en ambos VPCS, primero se ejecutan ip dhcp y show ip; en PC-SUC se comprueba después ping 10.20.10.1.
 
 **Registros que complementan la fase:**
 
@@ -66,7 +66,7 @@ ping google.com
 
 **Segundo transporte y miembros SD-WAN**
 
-Se incorporó port3 como ISP2 y se comprobó su salida a Internet. Luego se reunieron port1 y port3 en SD-WAN, se revisaron sus gateways y rutas y se configuró la selección por SLA con costos 10 y 20.
+Añadimos port3 como segundo camino WAN, llamado ISP2, y comprobamos que tuviera salida a Internet. Después agrupamos port1 y port3 en SD-WAN y revisamos sus puertas de enlace y rutas. Configuramos la selección según el cumplimiento del SLA, es decir, los límites de calidad definidos para el enlace, con costos 10 y 20.
 
 **Comandos en FortiGate sede:**
 
@@ -88,13 +88,13 @@ diagnose sys sdwan health-check
 
 *Captura 05. El diagnóstico enumera port1 y port3 como miembros SD-WAN y la tabla muestra sus rutas por defecto.*
 
-![Captura 08. La regla de servicio 1 muestra ambos miembros con SLA válido y costos locales 10 para port1 y 20 para port3.](img/08-SDWAN-SLA-rule.png)
+![Captura 08. La regla de servicio 1 muestra que ambos miembros cumplen el SLA, con costos locales 10 para port1 y 20 para port3.](img/08-SDWAN-SLA-rule.png)
 
-*Captura 08. La regla de servicio 1 muestra ambos miembros con SLA válido y costos locales 10 para port1 y 20 para port3.*
+*Captura 08. La regla de servicio 1 muestra que ambos miembros cumplen el SLA, con costos locales 10 para port1 y 20 para port3.*
 
-**Resultado:** Quedaron documentados dos caminos WAN y su integración en SD-WAN. ISP1 usa el NAT de GNS3 e ISP2 utiliza nodos Cloud conectados a VMnet8.
+**Resultado:** Quedaron documentados los dos caminos WAN y su integración en SD-WAN. ISP1 usa el NAT de GNS3 e ISP2 utiliza nodos Cloud conectados a VMnet8.
 
-**Aclaración:** La captura 05 conserva prioridades de una etapa previa; los ajustes posteriores se interpretan con la captura 08 y los comandos guardados. Ambos transportes pertenecen al mismo entorno virtual y no equivalen a dos operadores físicos independientes.
+**Aclaración:** La captura 05 muestra las prioridades de una etapa anterior. Para revisar los ajustes posteriores se deben consultar la captura 08 y los comandos guardados. Los dos caminos funcionan en el mismo entorno virtual; esta prueba no representa dos operadores físicos independientes.
 
 **Registros que complementan la fase:**
 
@@ -106,7 +106,7 @@ diagnose sys sdwan health-check
 
 **Caída y retorno de la salida a Internet**
 
-Se revisó la salida de PC1 cuando ISP1 no estaba disponible y después de recuperarlo. El estado del monitor se contrastó con capturas de paquetes para identificar el puerto de salida y la traducción NAT usada en cada momento.
+Probamos la salida de PC1 cuando ISP1 no estaba disponible y la revisamos otra vez después de recuperarlo. Comparamos el estado del monitor con las capturas de paquetes para saber por cuál puerto salía el tráfico y qué traducción NAT se utilizaba en cada caso.
 
 **Comandos en FortiGate sede:**
 
@@ -117,9 +117,9 @@ diagnose sniffer packet any 'icmp and host 208.67.222.222' 4 0 l
 get router info routing-table all
 ```
 
-![Captura 10. Internet_LAB marca port1 como dead y mantiene port3 alive con SLA válido.](img/10-ISP1-caido-SLA.png)
+![Captura 10. Internet_LAB muestra port1 como dead, sin disponibilidad, y port3 como alive, disponible y con SLA válido.](img/10-ISP1-caido-SLA.png)
 
-*Captura 10. Internet_LAB marca port1 como dead y mantiene port3 alive con SLA válido.*
+*Captura 10. Internet_LAB muestra port1 como dead, sin disponibilidad, y port3 como alive, disponible y con SLA válido.*
 
 ![Captura 11. La traza muestra el tráfico de PC1 hacia 8.8.4.4 saliendo por port3 con NAT a 192.168.140.144 y sus respuestas de vuelta.](img/11-PC1-salida-ISP2-NAT.png)
 
@@ -129,9 +129,9 @@ get router info routing-table all
 
 *Captura 15. Tras recuperar ISP1, la traza hacia 208.67.222.222 muestra salida por port1 con NAT a 192.168.42.27.*
 
-**Resultado:** Se observó salida a Internet por ISP2 durante la indisponibilidad de ISP1 y uso posterior de ISP1. Las trazas permiten reconocer el camino utilizado además de comprobar respuestas ICMP.
+**Resultado:** Durante la falla de ISP1, el tráfico hacia Internet salió por ISP2. Después se observó nuevamente la salida por ISP1. Las trazas muestran el puerto utilizado y las respuestas ICMP, por lo que permiten comprobar el recorrido además de la conectividad.
 
-**Aclaración:** Esta fase corresponde a Internet desde PC1 con su IP histórica .100; no mide el tiempo de recuperación de HTTP del DC ni acredita conmutación de la aplicación cloud.
+**Aclaración:** Esta fase comprueba Internet desde PC1 con su IP histórica .100. Medir la recuperación de HTTP del DC o comprobar el cambio de camino de la aplicación de nube requiere pruebas distintas; esta secuencia no demuestra esos resultados.
 
 **Registros que complementan la fase:**
 
@@ -142,7 +142,7 @@ get router info routing-table all
 
 **Calidad del enlace y selección por SLA**
 
-Se tomó un estado saludable de referencia y se aplicó desde GNS3 un filtro Delay de 200 ms. Se revisaron latencia, jitter y pérdida frente a los umbrales de Internet_LAB: 100 ms, 30 ms y 5 %. También se capturó el tráfico para comprobar la salida durante la degradación y el estado posterior a la reparación.
+Primero guardamos una medición con los enlaces en buen estado. Luego activamos en GNS3 un filtro Delay de 200 ms y revisamos la latencia, el jitter o variación del retardo y la pérdida de paquetes. Comparamos esas medidas con los límites de Internet_LAB: 100 ms, 30 ms y 5 %. También capturamos el tráfico para revisar su salida durante la degradación y comprobamos el estado de los enlaces después de la reparación.
 
 **Comandos en FortiGate sede:**
 
@@ -161,21 +161,21 @@ get router info routing-table all
 
 *Captura 17. El filtro de paquetes de GNS3 muestra Delay activo con latencia configurada en 200 ms y jitter añadido de 0 ms.*
 
-![Captura 19. Port1 figura alive pero fuera de SLA, con pérdida y latencia elevadas, mientras port3 conserva SLA válido.](img/19-Delay200-ISP1-alive-fuera-SLA.png)
+![Captura 19. Port1 sigue disponible, alive, pero supera los límites del SLA, con pérdida y latencia elevadas. Port3 conserva un SLA válido.](img/19-Delay200-ISP1-alive-fuera-SLA.png)
 
-*Captura 19. Port1 figura alive pero fuera de SLA, con pérdida y latencia elevadas, mientras port3 conserva SLA válido.*
+*Captura 19. Port1 sigue disponible, alive, pero supera los límites del SLA, con pérdida y latencia elevadas. Port3 conserva un SLA válido.*
 
 ![Captura 20. Durante la degradación, las solicitudes de PC1 hacia 1.0.0.1 salen por port3 y reciben respuestas.](img/20-PC1-ISP2-durante-degradacion.png)
 
 *Captura 20. Durante la degradación, las solicitudes de PC1 hacia 1.0.0.1 salen por port3 y reciben respuestas.*
 
-![Captura 26. La comprobación posterior vuelve a mostrar ambos ISP alive, con 0 % de pérdida y SLA válido.](img/26-Ambos-ISP-SLA-normal-tras-reparacion.png)
+![Captura 26. Después de la reparación, ambos ISP vuelven a aparecer disponibles, alive, con 0 % de pérdida y SLA válido.](img/26-Ambos-ISP-SLA-normal-tras-reparacion.png)
 
-*Captura 26. La comprobación posterior vuelve a mostrar ambos ISP alive, con 0 % de pérdida y SLA válido.*
+*Captura 26. Después de la reparación, ambos ISP vuelven a aparecer disponibles, alive, con 0 % de pérdida y SLA válido.*
 
-**Resultado:** Las evidencias distinguen un enlace disponible de un enlace que cumple la calidad requerida. Durante la degradación se observó el tráfico de PC1 por ISP2 y después se recuperó el estado saludable de ambos caminos.
+**Resultado:** Las capturas muestran que un enlace puede estar disponible y aun así superar los límites de calidad configurados. Mientras ISP1 estaba degradado, observamos el tráfico de PC1 por ISP2. Después se recuperó el estado saludable de ambos caminos.
 
-**Aclaración:** Los 200 ms son el valor del filtro, no la latencia final medida por el monitor. El proceso incluyó problemas intermedios de conectividad y una reparación; no se atribuye cada fallo únicamente al filtro ni se presenta como un ensayo repetido bajo condiciones idénticas.
+**Aclaración:** Los 200 ms corresponden al valor configurado en el filtro, no a la latencia final medida por el monitor. Durante el proceso también hubo problemas de conectividad y una reparación. Por eso no se atribuyen todos los fallos al filtro ni se presenta la secuencia como una prueba repetida bajo condiciones idénticas.
 
 **Registros que complementan la fase:**
 
@@ -186,7 +186,7 @@ get router info routing-table all
 
 **Segmento y servidor del Data Center**
 
-Se separó el DC de la LAN de usuarios mediante port4 de la sede, con gateway 10.10.20.1/24. Se configuró DC-SRV en 10.10.20.10/24, se revisaron su interfaz y ruta por defecto y se comprobó la comunicación con el gateway.
+Creamos una red independiente para el centro de datos (DC) en port4 de la sede, con puerta de enlace 10.10.20.1/24. Asignamos 10.10.20.10/24 a DC-SRV y revisamos su interfaz y su ruta por defecto. Finalmente probamos la comunicación con la puerta de enlace.
 
 **Comandos en FortiGate sede:**
 
@@ -210,9 +210,9 @@ ping -c 4 10.10.20.1
 
 *Captura 35. DC-SRV muestra 10.10.20.10/24, ruta por defecto vía 10.10.20.1 y cuatro respuestas de ese gateway.*
 
-**Resultado:** El servidor quedó en un segmento independiente y alcanzó su puerta de enlace sin pérdida en la prueba mostrada. Esta base permitió continuar con los túneles y el servicio HTTP.
+**Resultado:** El servidor quedó en una red separada de los usuarios y obtuvo respuestas de su puerta de enlace, sin pérdida de paquetes en la prueba mostrada. Con esta conexión local comprobada, continuamos con los túneles y el servicio HTTP.
 
-**Aclaración:** Estas imágenes comprueban direccionamiento y conectividad local; por sí solas no acreditan acceso HTTP ni acceso desde la sucursal.
+**Aclaración:** Estas imágenes comprueban la dirección y la conectividad local del servidor. El acceso HTTP y la comunicación desde la sucursal requieren las pruebas de las fases siguientes.
 
 **Registros que complementan la fase:**
 
@@ -224,7 +224,7 @@ ping -c 4 10.10.20.1
 
 **Túneles GRE y comunicación sucursal–DC**
 
-Se conectaron los bordes mediante GRE-ISP1 y después se añadió GRE-ISP2 como respaldo. Se establecieron rutas entre la LAN de sucursal y el DC y políticas para su tráfico; los diagnósticos de túnel, ping y captura de paquetes se usaron para revisar el recorrido.
+Conectamos los equipos de borde mediante GRE-ISP1 y luego añadimos GRE-ISP2 como respaldo. Configuramos las rutas entre la red de sucursal y el DC, junto con las políticas que permiten ese tráfico. Para comprobar el recorrido, revisamos los túneles, hicimos ping y capturamos los paquetes.
 
 **Comandos en VPCS — PC-SUC:**
 
@@ -261,9 +261,9 @@ get router info routing-table details 10.10.20.10
 
 *Captura 42. La traza muestra solicitudes ICMP entrando por GRE-ISP1 y saliendo por port4, con respuestas de vuelta y las IP privadas conservadas.*
 
-**Resultado:** La sucursal alcanzó el DC a través de GRE-ISP1 sin traducción de las direcciones de los extremos. El diseño dejó ese camino con distancia administrativa 10 y GRE-ISP2 como alternativa con distancia 20.
+**Resultado:** La sucursal alcanzó el DC por GRE-ISP1 y conservó las direcciones privadas de origen y destino. La ruta principal quedó con distancia administrativa 10 y la alternativa GRE-ISP2 con distancia 20; estos valores permiten dar preferencia al primer camino.
 
-**Aclaración:** La prueba de las capturas 41–42 usó PC-SUC con IP estática histórica 10.20.10.10; la revisión final recibió .100 por DHCP. Al repetir en VPCS se empieza con ip dhcp y show ip. GRE encapsula sin cifrar y estas capturas ICMP no demuestran HTTP ni confidencialidad.
+**Aclaración:** Las capturas 41–42 corresponden a la prueba anterior de PC-SUC con IP estática 10.20.10.10. En la revisión final recibió .100 por DHCP. Al repetir en VPCS se empieza con ip dhcp y show ip. GRE transporta los paquetes mediante encapsulación, sin cifrarlos; estas capturas ICMP no comprueban HTTP ni confidencialidad.
 
 **Registros que complementan la fase:**
 
@@ -275,7 +275,7 @@ get router info routing-table details 10.10.20.10
 
 **HTTP del DC y corrección de la política**
 
-Se creó la página del DC y se inició BusyBox httpd. La prueba local respondió, pero el primer curl desde sucursal agotó la espera. Al revisar FG-SUC se encontró SUC_PING_DC limitada a PING; se añadió HTTP a esa regla y se repitió la solicitud desde webterm1-2.
+Creamos la página del DC e iniciamos el servidor BusyBox httpd. La página respondió en el propio servidor, pero la primera solicitud con curl desde la sucursal agotó el tiempo de espera. Revisamos FG-SUC y encontramos que SUC_PING_DC solo permitía PING. Añadimos HTTP a esa regla y repetimos la solicitud desde webterm1-2.
 
 **Comandos en DC-SRV:**
 
@@ -306,9 +306,9 @@ end
 
 *Captura 43. DC-SRV inicia el servidor con la ruta completa de BusyBox y devuelve localmente el HTML de la página del DC.*
 
-![Captura 44. El primer curl desde webterm1-2 hacia 10.10.20.10 termina con timeout después de 5000 ms.](img/44-Webterm-sucursal-HTTP-timeout.png)
+![Captura 44. La primera solicitud con curl desde webterm1-2 a 10.10.20.10 agota el tiempo de espera después de 5000 ms.](img/44-Webterm-sucursal-HTTP-timeout.png)
 
-*Captura 44. El primer curl desde webterm1-2 hacia 10.10.20.10 termina con timeout después de 5000 ms.*
+*Captura 44. La primera solicitud con curl desde webterm1-2 a 10.10.20.10 agota el tiempo de espera después de 5000 ms.*
 
 ![Captura 45. La regla 2 SUC_PING_DC de FG-SUC muestra como único servicio permitido PING, antes de añadir HTTP.](img/45-FG-SUC-regla-2-solo-PING.png)
 
@@ -318,9 +318,9 @@ end
 
 *Captura 48. Después de corregir la política, el cliente de sucursal recibe el HTML del Data Center.*
 
-**Resultado:** Se pasó de un servicio accesible solo en la prueba local a recibir su página desde sucursal. Los archivos de interfaces conservan el inicio de HTTP y el registro posterior al arranque confirma HTTP 200 de DC-SRV y webterm1-2.
+**Resultado:** Después de corregir la política, el cliente de sucursal pudo recibir la página del DC. Los archivos de interfaces guardan el inicio del servicio HTTP. Además, el registro posterior al arranque confirma HTTP 200 en las comprobaciones de DC-SRV y webterm1-2; ese código indica que la solicitud fue atendida correctamente.
 
-**Aclaración:** Las capturas 44 y 45 son estados intermedios; la 48 muestra contenido recibido, no una cabecera HTTP 200. El ID 2 corresponde a esta topología y debe comprobarse por nombre antes de reutilizar el bloque. Los fragmentos no sustituyen la configuración completa del firewall.
+**Aclaración:** Las capturas 44 y 45 muestran el fallo y la política antes de corregirla. La 48 muestra el contenido recibido, pero no una cabecera HTTP 200. El ID 2 pertenece a esta topología y debe comprobarse por nombre antes de reutilizar el bloque. Estos fragmentos de comandos no reemplazan la configuración completa del firewall.
 
 **Registros que complementan la fase:**
 
@@ -332,7 +332,7 @@ end
 
 **Recuperación y retorno de HTTP del DC**
 
-Se repitieron solicitudes HTTP al DC desde sucursal mientras se desactivaba administrativamente port1 en FG-SUC. Se revisó la ruta de respaldo y después se habilitó otra vez port1 para comprobar el keepalive y el regreso de la ruta principal.
+Desde la sucursal dejamos solicitudes HTTP repetidas hacia el DC y desactivamos port1 desde la configuración de FG-SUC. Revisamos si se instalaba la ruta de respaldo. Luego habilitamos port1 y comprobamos los mensajes keepalive, que permiten revisar si el túnel sigue activo, y el regreso de la ruta principal.
 
 **Comandos en webterm1-2:**
 
@@ -365,9 +365,9 @@ diagnose sys gre keepalive all
 
 *Captura 50. FG-SUC desactiva administrativamente port1 mediante set status down.*
 
-![Captura 51. El sondeo HTTP muestra respuestas 200, tres intentos 000 y nuevos 200 desde las 01:28:16.](img/51-HTTP-durante-conmutacion-a-ISP2.png)
+![Captura 51. El sondeo HTTP muestra respuestas 200, tres intentos con código 000 de curl sin respuesta HTTP y nuevos 200 desde las 01:28:16.](img/51-HTTP-durante-conmutacion-a-ISP2.png)
 
-*Captura 51. El sondeo HTTP muestra respuestas 200, tres intentos 000 y nuevos 200 desde las 01:28:16.*
+*Captura 51. El sondeo HTTP muestra respuestas 200, tres intentos con código 000 de curl sin respuesta HTTP y nuevos 200 desde las 01:28:16.*
 
 ![Captura 52. La ruta a 10.10.20.0/24 está activa por GRE-ISP2, vía 10.255.2.1 y con distancia 20.](img/52-Ruta-al-DC-activa-por-GRE-ISP2.png)
 
@@ -377,9 +377,9 @@ diagnose sys gre keepalive all
 
 *Captura 54. Tras restaurar ISP1, el keepalive está alive y la ruta del DC vuelve a GRE-ISP1 con distancia 10.*
 
-**Resultado:** HTTP del DC se recuperó mediante GRE-ISP2 y después volvió el camino principal GRE-ISP1. Entre el inicio del primer intento fallido, 01:28:09, y el inicio del primero nuevamente exitoso, 01:28:16, transcurrieron siete segundos.
+**Resultado:** El acceso HTTP al DC se recuperó por GRE-ISP2 y después volvió a utilizar GRE-ISP1. El primer intento fallido comenzó a las 01:28:09 y el primero nuevamente exitoso a las 01:28:16. Entre el inicio de ambos intentos transcurrieron siete segundos.
 
-**Aclaración:** Los siete segundos se calculan entre inicios de intentos HTTP, no desde un instante instrumentado de caída. No se cronometró el retorno. Esta prueba corresponde al DC y no demuestra recuperación de la aplicación cloud ante la misma caída.
+**Aclaración:** Los siete segundos se calculan entre el inicio de dos solicitudes HTTP. No se registró un instante exacto de caída del enlace para medir desde allí y tampoco se cronometró el retorno. Esta prueba corresponde al DC; no demuestra que la aplicación de nube se recupere ante la misma falla.
 
 **Registros que complementan la fase:**
 
@@ -390,7 +390,7 @@ diagnose sys gre keepalive all
 
 **Nube simulada y coincidencia de la regla SD-WAN**
 
-Se habilitó HTTP en CLOUD-SRV, con CLOUD-EDGE como gateway y frontal de publicación mediante socat. La primera solicitud al frontal 192.168.42.84 recibió la página, pero no coincidió con la regla específica. Se cambió la prueba al destino privado 10.30.10.10, con ruta /32 vía CLOUD-EDGE, reenvío IPv4 y ajuste del destino de HTTP_NUBE_ISP1.
+Activamos HTTP en CLOUD-SRV y usamos CLOUD-EDGE como puerta de enlace y punto de entrada mediante socat. La primera solicitud a 192.168.42.84 recibió la página, pero no coincidió con la regla específica. Después probamos directamente el destino privado 10.30.10.10. Para ello usamos una ruta /32 vía CLOUD-EDGE, habilitamos el reenvío IPv4 y ajustamos el destino de HTTP_NUBE_ISP1.
 
 **Comandos en CLOUD-SRV:**
 
@@ -424,17 +424,17 @@ diagnose firewall proute list
 
 *Captura 66. La solicitud inicial al frontal 192.168.42.84 recibe el HTML que identifica la nube simulada y CLOUD-SRV 10.30.10.10.*
 
-![Captura 67. La regla HTTP_NUBE_ISP1 todavía dirigida al frontal .84 conserva hit_count=0 en la prueba inicial.](img/67-FG-SUC-SDWAN-regla-HTTP-contador-cero.png)
+![Captura 67. En la prueba inicial, HTTP_NUBE_ISP1 sigue dirigida al punto de entrada .84 y conserva hit_count=0, sin coincidencias.](img/67-FG-SUC-SDWAN-regla-HTTP-contador-cero.png)
 
-*Captura 67. La regla HTTP_NUBE_ISP1 todavía dirigida al frontal .84 conserva hit_count=0 en la prueba inicial.*
+*Captura 67. En la prueba inicial, HTTP_NUBE_ISP1 sigue dirigida al punto de entrada .84 y conserva hit_count=0, sin coincidencias.*
 
-![Captura 70. La prueba corregida muestra ruta /32 a 10.30.10.10 por port1 y hit_count=1 en HTTP_NUBE_ISP1 para TCP 80.](img/70-SDWAN-HTTP-nube-regla-2-coincidencia-ISP1.png)
+![Captura 70. La prueba corregida muestra una ruta /32 a 10.30.10.10 por port1 y hit_count=1, una coincidencia en HTTP_NUBE_ISP1 para TCP 80.](img/70-SDWAN-HTTP-nube-regla-2-coincidencia-ISP1.png)
 
-*Captura 70. La prueba corregida muestra ruta /32 a 10.30.10.10 por port1 y hit_count=1 en HTTP_NUBE_ISP1 para TCP 80.*
+*Captura 70. La prueba corregida muestra una ruta /32 a 10.30.10.10 por port1 y hit_count=1, una coincidencia en HTTP_NUBE_ISP1 para TCP 80.*
 
-**Resultado:** El destino enrutado 10.30.10.10 devolvió HTTP 200 desde sucursal y la regla específica registró una coincidencia por el miembro 1, port1. La respuesta HTTP se conserva en el registro JSON y la selección de regla en la captura 70.
+**Resultado:** Desde la sucursal, el destino enrutado 10.30.10.10 devolvió HTTP 200. La regla específica registró una coincidencia por el miembro 1, port1. El registro JSON conserva la respuesta HTTP y la captura 70 muestra la selección de la regla; las dos evidencias se complementan.
 
-**Aclaración:** Las capturas 66–67 son el intento inicial al frontal, no prueba de coincidencia. La 70 no muestra la respuesta HTTP. Se trata de una nube local simulada, con clasificación por IP y puerto; no se demostró conmutación cloud ni reconocimiento profundo de aplicaciones. Los últimos ajustes persistentes se revisaron sin un nuevo reinicio posterior.
+**Aclaración:** Las capturas 66–67 muestran el intento inicial al punto de entrada y no prueban una coincidencia con la regla. La 70 muestra la selección, pero no la respuesta HTTP. La nube funciona dentro del laboratorio y la regla clasifica por IP y puerto; no se comprobaron reconocimiento profundo de aplicaciones ni cambio de camino de la nube ante una falla. Los últimos ajustes persistentes se revisaron, pero no se reinició otra vez para comprobarlos.
 
 **Registros que complementan la fase:**
 
@@ -449,7 +449,7 @@ diagnose firewall proute list
 
 **Perfil QoS y comparación de descargas**
 
-Se prepararon archivos de 4 MiB en el DC y 16 MiB en la nube y se compararon descargas simultáneas desde sucursal. En port2 de FG-SUC se declararon sucesivamente 8000 y 4000 kbps; se aplicó la política de retorno QOS_HTTP_DC y se verificó por separado la asociación del perfil QOS_DC_ALTA en una sesión.
+Preparamos un archivo de 4 MiB en el DC y otro de 16 MiB en la nube para comparar descargas simultáneas desde la sucursal. En port2 de FG-SUC declaramos primero 8000 y después 4000 kbps. Aplicamos la política de retorno QOS_HTTP_DC y revisamos por separado si una sesión tenía asociado el perfil QOS_DC_ALTA.
 
 **Comandos en DC-SRV:**
 
@@ -505,9 +505,9 @@ wait "$nube"
 
 *Captura 64. La corrida de 4000 kbps termina ambas descargas con HTTP 200: DC en 22.543627 s y nube en 81.394839 s.*
 
-**Resultado:** El diagnóstico de sesión registra reply-shaper QOS_DC_ALTA y shaping_policy_id 1. Las descargas no mejoraron: a 8000 kbps el DC pasó de 9.309107 a 10.015249 s y la nube de 37.696520 a 41.731214 s; a 4000 kbps el DC pasó de 21.120041 a 22.543627 s, 1.424 s más, equivalente a 6.74 %.
+**Resultado:** El diagnóstico de sesión mostró reply-shaper QOS_DC_ALTA y shaping_policy_id 1, lo que confirma la asignación del perfil de calidad de servicio (QoS). Las descargas no fueron más rápidas: a 8000 kbps el DC pasó de 9.309107 a 10.015249 s y la nube de 37.696520 a 41.731214 s. A 4000 kbps el DC pasó de 21.120041 a 22.543627 s: tardó 1.424 s más, equivalente a 6.74 %.
 
-**Aclaración:** La captura 62 muestra tiempos, no acredita por sí sola la asignación del shaper. El orden de las corridas de 4000 kbps se interpretó con la confirmación del registro y falta una referencia completa de nube sin prioridad. No hubo repeticiones controladas suficientes para afirmar un beneficio; los tiempos de curl no son jitter de red.
+**Aclaración:** La captura 62 muestra los tiempos de descarga; la asignación del shaper o perfil que regula el tráfico se comprueba en el registro de sesión. Para ordenar las corridas de 4000 kbps se usó la confirmación del registro, y falta una referencia completa de nube sin prioridad. Las repeticiones controladas fueron insuficientes para afirmar una mejora. El tiempo total de curl tampoco es una medida del jitter de la red.
 
 **Registros que complementan la fase:**
 
@@ -519,7 +519,7 @@ wait "$nube"
 
 **Acceso permitido en TCP 80 y prueba de TCP 8080**
 
-Se inició temporalmente un servicio HTTP del DC en TCP 8080 y se comprobó primero que respondiera en el propio servidor. Desde sucursal se probaron TCP 80 y TCP 8080 con límites de espera. Al terminar se retiró el servicio temporal; la evidencia se conserva como JSON, sin una captura PNG adicional.
+Iniciamos temporalmente un servicio HTTP del DC en el puerto TCP 8080 y comprobamos que respondiera en el propio servidor. Después probamos desde la sucursal los puertos TCP 80 y TCP 8080, con un tiempo máximo de espera. Al terminar retiramos el servicio temporal. Esta prueba se conserva en un archivo JSON, sin una captura PNG adicional.
 
 **Comandos en DC-SRV:**
 
@@ -536,9 +536,9 @@ curl --noproxy "*" -fsS --max-time 5 -o /dev/null -w "SUC_80=%{http_code}\n" htt
 curl --noproxy "*" -fsS --connect-timeout 3 --max-time 5 -o /dev/null -w "SUC_8080=%{http_code}\n" http://10.10.20.10:8080/
 ```
 
-**Resultado:** TCP 8080 devolvió HTTP 200 localmente y TCP 80 devolvió HTTP 200 desde sucursal. El intento desde sucursal a TCP 8080 agotó la espera después de 3001 ms, con código de salida curl 28; el registro incluye la retirada del servicio de prueba.
+**Resultado:** El servicio en TCP 8080 devolvió HTTP 200 en la prueba local y TCP 80 devolvió HTTP 200 desde la sucursal. En cambio, la solicitud desde sucursal a TCP 8080 agotó la espera después de 3001 ms, con código de salida curl 28. El registro también incluye la retirada del servicio de prueba.
 
-**Aclaración:** La orden de httpd es el componente de servicio del lanzamiento temporal guardado, no un script autónomo. La prueba acredita acceso selectivo de extremo a extremo, pero no identifica cuál de los dos FortiGate descartó TCP 8080 porque no se guardó el log de descarte de esa ejecución.
+**Aclaración:** La orden de httpd forma parte del lanzamiento temporal guardado; no es un script autónomo. La prueba muestra que el acceso desde sucursal fue distinto para los dos puertos. No se puede identificar cuál de los dos FortiGate descartó TCP 8080 porque no se guardó el registro de descarte de esa ejecución.
 
 **Registros que complementan la fase:**
 
@@ -549,7 +549,7 @@ curl --noproxy "*" -fsS --connect-timeout 3 --max-time 5 -o /dev/null -w "SUC_80
 
 **Supervisión central de los bordes**
 
-Se utilizó gestionar-bordes.ps1 para consultar desde un punto central los miembros SD-WAN, la salud de los enlaces y el keepalive GRE de sede y FG-SUC. El script requiere consolas previamente autenticadas con prompt listo y solo lee estados; las corridas se documentan mediante TXT, sin PNG adicional.
+Usamos gestionar-bordes.ps1 para consultar desde un punto central los miembros SD-WAN, el estado de los enlaces y el keepalive GRE de la sede y FG-SUC. Antes de ejecutarlo, ambas consolas deben tener una sesión iniciada y mostrar el prompt listo para recibir órdenes. El script solo consulta estados. Sus ejecuciones se documentan mediante archivos TXT, sin una captura PNG adicional.
 
 **Comandos en Windows — PowerShell:**
 
@@ -565,9 +565,9 @@ diagnose sys sdwan health-check
 diagnose sys gre keepalive all
 ```
 
-**Resultado:** El registro histórico de las 16:44 completó seis lecturas, tres por cada FortiGate. La revisión posterior de las 19:05 completó solamente las tres consultas de FG-SUC porque la consola de sede no tenía el prompt listo.
+**Resultado:** El registro histórico de las 16:44 contiene seis lecturas: tres por cada FortiGate. En la revisión posterior de las 19:05 solo se completaron las tres consultas de FG-SUC, porque la consola de sede no tenía el prompt listo.
 
-**Aclaración:** El intento previo de las 16:38 omitió equipos por login o prompt y no se cuenta como éxito. La revisión de tres lecturas no sustituye la corrida histórica de seis. Se demostró supervisión central de solo lectura, sin distribución ni sincronización de políticas.
+**Aclaración:** El intento previo de las 16:38 omitió equipos por falta de inicio de sesión o de un prompt listo, por lo que no se cuenta como una ejecución exitosa. La revisión de tres lecturas no reemplaza la ejecución histórica de seis. El resultado demuestra supervisión central de solo lectura; el script no distribuye ni sincroniza políticas.
 
 **Registros que complementan la fase:**
 
@@ -578,6 +578,6 @@ diagnose sys gre keepalive all
 
 ## Cierre de la documentación
 
-Las imágenes y registros muestran el avance y sus resultados. GRE se utilizó sin cifrado, las mediciones de QoS no demostraron una mejora y la supervisión central fue de solo lectura. La exportación GNS3 y el video siguen pendientes de anexar.
+Las capturas y los registros permiten seguir los ajustes del montaje y comprobar sus resultados. GRE funcionó sin cifrado, las mediciones de QoS no mostraron una mejora y la consulta central fue de solo lectura. Falta anexar la exportación de GNS3 y el video. También se debe importar el proyecto completo y comprobar su arranque para verificar que se pueda restaurar.
 
 [Volver a la entrega del grupo 1](README.md)
