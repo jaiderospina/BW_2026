@@ -129,7 +129,7 @@ diagnose sys sdwan member
 diagnose sys sdwan health-check
 ```
 
-![Verificación de salud de ambos ISP](img/28-SLA-ambos-ISP-verificacion.png)
+El [estado normal de ambos ISP](img/28-SLA-ambos-ISP-verificacion.png) se conserva como evidencia adicional.
 
 ### Paso 3. Integrar el DC y los túneles GRE
 
@@ -289,7 +289,7 @@ El [registro guardado](registros/gestion-centralizada-fortigate.txt) completó s
 | Gestión central | Una ejecución de seis lecturas y una revisión posterior de tres. | Requiere consolas listas y no aplica políticas. |
 | Protección del tráfico | Comunicación entre sedes por GRE. | GRE encapsula; no se demostró cifrado. |
 
-Las [70 capturas originales](img/) y los [registros seleccionados](registros/) amplían las nueve capturas incluidas en este informe. Las imágenes no se editaron para cambiar direcciones o resultados.
+La [guía de las ocho capturas principales](img/README.md) explica qué demuestra cada imagen y cómo se complementa con los registros. Las [70 capturas originales](img/) conservan también los ensayos previos. Las imágenes no se editaron para cambiar direcciones o resultados.
 
 ## 6. Conclusiones y trabajo pendiente
 
@@ -310,4 +310,6 @@ Como mejoras técnicas se proponen cifrar el tráfico sensible, repetir QoS con 
 - Ospina Navas, J. *Proyecto final de Banda Ancha: Implementación de SD-WAN para Continuidad del Negocio y Seguridad en un Escenario Híbrido (Data Center + Cloud)*. Guía suministrada para la asignatura.
 - [Fortinet. Configuración de reglas SD-WAN, FortiOS 7.2.0](https://docs.fortinet.com/document/fortigate/7.2.0/administration-guide/380145/configuring-sd-wan-rules).
 - [GNS3. Docker support in GNS3](https://docs.gns3.com/docs/emulators/docker-support-in-gns3).
+- [RFC Editor. RFC 2784 sobre encapsulación GRE](https://www.rfc-editor.org/rfc/rfc2784.html).
+- [Fortinet. Traffic shaping, FortiOS 7.2.0](https://docs.fortinet.com/document/fortigate/7.2.0/administration-guide/297431/traffic-shaping).
 - Evidencia primaria del grupo: [capturas 01–70](img/), [registros de comprobación](registros/) y [configuraciones utilizadas](configs/). Las conclusiones se apoyan en esos resultados; la documentación técnica se utiliza como referencia de funcionamiento.

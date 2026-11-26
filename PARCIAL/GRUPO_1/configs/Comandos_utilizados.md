@@ -575,7 +575,7 @@ Los archivos de referencia suministrados contienen los comandos de arranque:
 
 CLOUD-EDGE publica TCP/80 mediante el script cloud-ingress.sh suministrado. Su contenido exacto, que invoca socat, se entrega por separado; no se simplifica como si constituyera un servicio cloud público.
 
-En la prueba final de destino enrutado se usaron estos comandos, documentados en Cierre-SDWAN.md y el JSON correspondiente:
+En la prueba final de destino enrutado se usaron estos comandos. El registro incluido [sdwan-http-nube-destino-enrutado.json](../registros/sdwan-http-nube-destino-enrutado.json) permite revisar la ruta y la respuesta HTTP. El documento de cierre recibido se utilizó como fuente de estos fragmentos y no forma parte de esta carpeta:
 
 ~~~sh
 ip -4 addr show dev eth0
@@ -619,7 +619,7 @@ config system sdwan
 end
 ~~~
 
-Ajuste final documentado en Cierre-SDWAN.md, corroborado por la captura 70 con hit_count=1 y por HTTP 200 a 10.30.10.10:
+Ajuste final transcrito del documento de cierre recibido y corroborado por la [captura 70](../img/70-SDWAN-HTTP-nube-regla-2-coincidencia-ISP1.png), con hit_count=1, y el [registro HTTP](../registros/sdwan-http-nube-destino-enrutado.json) a 10.30.10.10:
 
 ~~~text
 config router static
