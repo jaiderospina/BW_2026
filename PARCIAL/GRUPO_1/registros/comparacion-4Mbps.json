@@ -1,0 +1,14 @@
+{
+  "cap_kbps": 4000,
+  "dc_bytes": 4194304,
+  "inferred_run_order_from_user_confirmation": true,
+  "dc_no_priority_seconds": 21.120041,
+  "dc_priority_seconds": 22.543627,
+  "dc_difference_seconds": 1.424,
+  "dc_difference_percent": 6.74,
+  "cloud_no_priority_seconds": null,
+  "cloud_priority_seconds": 81.394839,
+  "cloud_priority_http": 200,
+  "configured_priority_confirmed_in_prior_session": true,
+  "improvement_observed": false
+}

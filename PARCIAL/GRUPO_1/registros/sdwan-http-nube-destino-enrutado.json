@@ -1,0 +1,12 @@
+[
+  {
+    "name": "webterm1-2",
+    "output": "ip -4 route get 10.30.10.10; curl --noproxy \"*\" -fsS -D - --max-time 7 http:\r\r\n//10.30.10.10/\r\n10.30.10.10 via 10.20.10.1 dev eth0  src 10.20.10.20 \r\nHTTP/1.1 200 OK\r\r\nDate: Wed, 25 Nov 2026 21:42:50 GMT\r\r\nConnection: close\r\r\nContent-type: text/html\r\r\nAccept-Ranges: bytes\r\r\nLast-Modified: Mon, 23 Nov 2026 22:30:59 GMT\r\r\nETag: \"6b04bea3-c4\"\r\r\nContent-Length: 196\r\r\n\r\r\n<!doctype html>\r\n<html lang=\"es\">\r\n<meta charset=\"utf-8\">\r\n<title>Nube simulada | Banda Ancha</title>\r\n<h1>Nube simulada - Laboratorio Banda Ancha</h1>\r\n<p>Servidor CLOUD-SRV | 10.30.10.10</p>\r\n</html>\r\n/ # \r\n/ # \u001b[6n",
+    "http_ok": true
+  },
+  {
+    "name": "CLOUD-EDGE",
+    "output": "ip -4 -o addr show dev eth0; cat /proc/sys/net/ipv4/ip_forward; cat /etc/net\r\r\nwork/interfaces\r\n12: eth0    inet 192.168.42.84/24 brd 192.168.42.255 scope global eth0\\       valid_lft forever preferred_lft forever\r\n1\r\nauto eth0\r\niface eth0 inet dhcp\r\n\r\nauto eth1\r\niface eth1 inet static\r\n    address 10.30.10.1\r\n    netmask 255.255.255.0\r\n    post-up /bin/sh /root/cloud-ingress.sh\r\n/ # \r\n/ # \u001b[6n",
+    "http_ok": false
+  }
+]

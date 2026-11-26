@@ -1,0 +1,6 @@
+auto eth0
+iface eth0 inet static
+    address 10.30.10.10
+    netmask 255.255.255.0
+    gateway 10.30.10.1
+    post-up /usr/bin/curl --noproxy '*' -fsS --max-time 2 http://10.30.10.10/ >/dev/null 2>&1 || /gns3/bin/busybox httpd -p 10.30.10.10:80 -h /root/cloud-web

@@ -1,0 +1,14 @@
+SIMULACION DE GESTION DE BORDES - 2026-11-25T16:38:23.0840278-05:00
+API: http://192.168.232.1:3080/v2 | Proyecto: ee82c824-511f-40e4-a875-f19c0bf3bdf2
+Alcance: estado SD-WAN y GRE. Sin login ni cambios de configuracion.
+
+=== FortiGate7.2.0x-1 | 2026-11-25T16:38:23.1123157-05:00 ===
+Nodo: aceedf9f-40e1-4654-a503-2dec749d54e4 | Consola API: 192.168.232.128:5004
+OMITIDO_REQUIERE_LOGIN: no se enviaron credenciales ni diagnosticos.
+
+=== FG-SUC | 2026-11-25T16:38:25.1672024-05:00 ===
+Nodo: d21c01b3-b96a-4a94-b82c-0c8a56955ca9 | Consola API: 192.168.232.128:5005
+OMITIDO_SIN_PROMPT: no se observo un prompt raiz listo; no se enviaron diagnosticos.
+
+Fin: 2026-11-25T16:38:27.1932269-05:00
+

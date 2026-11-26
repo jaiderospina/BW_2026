@@ -1,0 +1,23 @@
+[
+  {
+    "name": "CLOUD-EDGE",
+    "front": "192.168.42.84",
+    "network": "ip -4 -o addr show dev eth0; /gns3/bin/busybox netstat -lnt\r\n19: eth0    inet 192.168.42.84/24 brd 192.168.42.255 scope global eth0\\       valid_lft forever preferred_lft forever\r\nActive Internet connections (only servers)\r\nProto Recv-Q Send-Q Local Address           Foreign Address         State       \r\ntcp        0      0 192.168.42.84:80        0.0.0.0:*               LISTEN      \r\n/ # \r\n/ # \u001b[6n",
+    "http": "curl --noproxy \"*\" -fsS -D - --max-time 4 http://192.168.42.84/\r\nHTTP/1.1 200 OK\r\r\nDate: Mon, 23 Nov 2026 22:33:59 GMT\r\r\nConnection: close\r\r\nContent-type: text/html\r\r\nAccept-Ranges: bytes\r\r\nLast-Modified: Mon, 23 Nov 2026 22:30:59 GMT\r\r\nETag: \"6b04bea3-c4\"\r\r\nContent-Length: 196\r\r\n\r\r\n<!doctype html>\r\n<html lang=\"es\">\r\n<meta charset=\"utf-8\">\r\n<title>Nube simulada | Banda Ancha</title>\r\n<h1>Nube simulada - Laboratorio Banda Ancha</h1>\r\n<p>Servidor CLOUD-SRV | 10.30.10.10</p>\r\n</html>\r\n/ # \r\n/ # \u001b[6n",
+    "passed": true
+  },
+  {
+    "name": "webterm1-1",
+    "front": "192.168.42.84",
+    "http": "ip -4 route get 192.168.42.84; curl --noproxy \"*\" -fsS -D - --connect-timeou\r\r\nt 3 --max-time 5 http://192.168.42.84/\r\n192.168.42.84 via 10.10.10.1 dev eth0  src 10.10.10.101 \r\nHTTP/1.1 200 OK\r\r\nDate: Mon, 23 Nov 2026 22:34:04 GMT\r\r\nConnection: close\r\r\nContent-type: text/html\r\r\nAccept-Ranges: bytes\r\r\nLast-Modified: Mon, 23 Nov 2026 22:30:59 GMT\r\r\nETag: \"6b04bea3-c4\"\r\r\nContent-Length: 196\r\r\n\r\r\n<!doctype html>\r\n<html lang=\"es\">\r\n<meta charset=\"utf-8\">\r\n<title>Nube simulada | Banda Ancha</title>\r\n<h1>Nube simulada - Laboratorio Banda Ancha</h1>\r\n<p>Servidor CLOUD-SRV | 10.30.10.10</p>\r\n</html>\r\n/ # \r\n/ # \u001b[6n",
+    "passed": true,
+    "added_route": false
+  },
+  {
+    "name": "webterm1-2",
+    "front": "192.168.42.84",
+    "http": "if ! ip -4 route get 192.168.42.84 >/dev/null 2>&1; then /sbin/ip route add \r\r\n192.168.42.84/32 via 10.20.10.1 dev eth0 && echo ROUTE_ADDED; fi; ip -4 route ge\r\r\nt 192.168.42.84; curl --noproxy \"*\" -fsS -D - --connect-timeout 3 --max-time 5 h\r\r\nttp://192.168.42.84/\r\nROUTE_ADDED\r\n192.168.42.84 via 10.20.10.1 dev eth0  src 10.20.10.20 \r\nHTTP/1.1 200 OK\r\r\nDate: Mon, 23 Nov 2026 22:34:10 GMT\r\r\nConnection: close\r\r\nContent-type: text/html\r\r\nAccept-Ranges: bytes\r\r\nLast-Modified: Mon, 23 Nov 2026 22:30:59 GMT\r\r\nETag: \"6b04bea3-c4\"\r\r\nContent-Length: 196\r\r\n\r\r\n<!doctype html>\r\n<html lang=\"es\">\r\n<meta charset=\"utf-8\">\r\n<title>Nube simulada | Banda Ancha</title>\r\n<h1>Nube simulada - Laboratorio Banda Ancha</h1>\r\n<p>Servidor CLOUD-SRV | 10.30.10.10</p>\r\n</html>\r\n/ # \r\n/ # \u001b[6n",
+    "passed": true,
+    "added_route": true
+  }
+]

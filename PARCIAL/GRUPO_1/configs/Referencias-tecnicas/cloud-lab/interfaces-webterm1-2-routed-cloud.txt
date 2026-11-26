@@ -1,0 +1,7 @@
+auto eth0
+iface eth0 inet static
+    address 10.20.10.20
+    netmask 255.255.255.0
+    post-up /sbin/ip route replace 10.10.20.0/24 via 10.20.10.1 dev eth0
+    post-up /sbin/ip route replace 192.168.42.84/32 via 10.20.10.1 dev eth0
+    post-up /sbin/ip route replace 10.30.10.10/32 via 10.20.10.1 dev eth0

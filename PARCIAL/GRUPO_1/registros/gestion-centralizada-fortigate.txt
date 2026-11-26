@@ -1,0 +1,72 @@
+SIMULACION DE GESTION DE BORDES - 2026-11-25T16:44:16.4249403-05:00
+API: http://192.168.232.1:3080/v2 | Proyecto: ee82c824-511f-40e4-a875-f19c0bf3bdf2
+Alcance: estado SD-WAN y GRE. Sin login ni cambios de configuracion.
+
+=== FortiGate7.2.0x-1 | 2026-11-25T16:44:16.4504373-05:00 ===
+Nodo: aceedf9f-40e1-4654-a503-2dec749d54e4 | Consola API: 192.168.232.128:5004
+
+[2026-11-25T16:44:18.9528751-05:00] diagnose sys sdwan member
+diagnose sys sdwan member
+Member(2): interface: port3, flags=0x0 , gateway: 192.168.140.2, priority: 1 1024, weight: 0
+Member(1): interface: port1, flags=0x0 , gateway: 192.168.42.1, priority: 1 1024, weight: 0
+
+FortiGate-VM64-KVM # 
+FortiGate-VM64-KVM # 
+Resultado: LEIDO
+
+[2026-11-25T16:44:19.1260492-05:00] diagnose sys sdwan health-check
+diagnose sys sdwan health-check
+Health Check(Internet_LAB): 
+Seq(1 port1): state(alive), packet-loss(0.000%) latency(6.738), jitter(0.251), mos(4.401), bandwidth-up(999995), bandwidth-dw(999992), bandwidth-bi(1999987) sla_map=0x1
+Seq(2 port3): state(alive), packet-loss(0.000%) latency(6.503), jitter(0.285), mos(4.401), bandwidth-up(999999), bandwidth-dw(999999), bandwidth-bi(1999998) sla_map=0x1
+
+FortiGate-VM64-KVM # 
+FortiGate-VM64-KVM # 
+Resultado: LEIDO
+
+[2026-11-25T16:44:19.2827830-05:00] diagnose sys gre keepalive all
+diagnose sys gre keepalive all
+
+GRE tunnel: GRE Status: alive
+period: 2000 ms, retries 0/3
+Packets sent: 616  Packets received: 616 
+
+FortiGate-VM64-KVM # 
+FortiGate-VM64-KVM # 
+Resultado: LEIDO
+
+=== FG-SUC | 2026-11-25T16:44:19.4377395-05:00 ===
+Nodo: d21c01b3-b96a-4a94-b82c-0c8a56955ca9 | Consola API: 192.168.232.128:5005
+
+[2026-11-25T16:44:21.8554086-05:00] diagnose sys sdwan member
+diagnose sys sdwan member
+Member(1): interface: port1, flags=0x0 , gateway: 192.168.42.1, priority: 1 1024, weight: 0
+Member(2): interface: port3, flags=0x0 , gateway: 192.168.140.2, priority: 1 1024, weight: 0
+
+FG-SUC # 
+FG-SUC # 
+Resultado: LEIDO
+
+[2026-11-25T16:44:22.0096025-05:00] diagnose sys sdwan health-check
+diagnose sys sdwan health-check
+Health Check(Internet_SUC): 
+Seq(1 port1): state(alive), packet-loss(0.000%) latency(6.743), jitter(0.255), mos(4.401), bandwidth-up(999997), bandwidth-dw(999998), bandwidth-bi(1999995) sla_map=0x1
+Seq(2 port3): state(alive), packet-loss(0.000%) latency(6.376), jitter(0.257), mos(4.401), bandwidth-up(999999), bandwidth-dw(999999), bandwidth-bi(1999998) sla_map=0x1
+
+FG-SUC # 
+FG-SUC # 
+Resultado: LEIDO
+
+[2026-11-25T16:44:22.1635832-05:00] diagnose sys gre keepalive all
+diagnose sys gre keepalive all
+
+GRE tunnel: GRE Status: alive
+period: 2000 ms, retries 0/3
+Packets sent: 617  Packets received: 617 
+
+FG-SUC # 
+FG-SUC # 
+Resultado: LEIDO
+
+Fin: 2026-11-25T16:44:22.3179669-05:00
+

@@ -1,0 +1,14 @@
+[
+  {
+    "name": "DC-SRV",
+    "output": "hostname; ip -4 addr show dev eth0; ip -4 route; /gns3/bin/busybox netstat -\r\r\nlnt\r\nDC-SRV\r\n11: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel qlen 1000\r\n    inet 10.10.20.10/24 scope global eth0\r\n       valid_lft forever preferred_lft forever\r\ndefault via 10.10.20.1 dev eth0 \r\n10.10.20.0/24 dev eth0 scope link  src 10.10.20.10 \r\nActive Internet connections (only servers)\r\nProto Recv-Q Send-Q Local Address           Foreign Address         State       \r\ntcp        0      0 10.10.20.10:80          0.0.0.0:*               LISTEN      \r\n/ # \r\n/ # \u001b[6n",
+    "http": "curl --noproxy \"*\" -fsS --max-time 5 -D - http://10.10.20.10/\r\nHTTP/1.1 200 OK\r\r\nDate: Mon, 23 Nov 2026 22:22:06 GMT\r\r\nConnection: close\r\r\nContent-type: text/html\r\r\nAccept-Ranges: bytes\r\r\nLast-Modified: Mon, 23 Nov 2026 22:10:50 GMT\r\r\nETag: \"6b04b9ea-2f\"\r\r\nContent-Length: 47\r\r\n\r\r\n<h1>Data Center - Laboratorio Banda Ancha</h1>\r\n/ # \r\n/ # \u001b[6n",
+    "pass": true
+  },
+  {
+    "name": "webterm1-2",
+    "output": "hostname; ip -4 addr show dev eth0; ip -4 route; /gns3/bin/busybox netstat -\r\r\nlnt\r\nwebterm1-2\r\n12: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel qlen 1000\r\n    inet 10.20.10.20/24 scope global eth0\r\n       valid_lft forever preferred_lft forever\r\n10.10.20.0/24 via 10.20.10.1 dev eth0 \r\n10.20.10.0/24 dev eth0 scope link  src 10.20.10.20 \r\nActive Internet connections (only servers)\r\nProto Recv-Q Send-Q Local Address           Foreign Address         State       \r\n/ # \r\n/ # \u001b[6n",
+    "http": "curl --noproxy \"*\" -fsS --max-time 5 -D - http://10.10.20.10/\r\nHTTP/1.1 200 OK\r\r\nDate: Mon, 23 Nov 2026 22:22:13 GMT\r\r\nConnection: close\r\r\nContent-type: text/html\r\r\nAccept-Ranges: bytes\r\r\nLast-Modified: Mon, 23 Nov 2026 22:10:50 GMT\r\r\nETag: \"6b04b9ea-2f\"\r\r\nContent-Length: 47\r\r\n\r\r\n<h1>Data Center - Laboratorio Banda Ancha</h1>\r\n/ # \r\n/ # \u001b[6n",
+    "pass": true
+  }
+]

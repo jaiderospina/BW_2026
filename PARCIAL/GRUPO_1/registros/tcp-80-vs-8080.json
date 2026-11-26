@@ -1,0 +1,9 @@
+{
+  "firewall_console": "Sin sesión lista para FG-SUC",
+  "start": "test \"$(hostname)\" = DC-SRV && test -s /root/dc-web-lab/index.html && { /gns\r\r\n3/bin/busybox netstat -lnt | grep -qE \":8080[[:space:]]\" && echo PROBE_BUSY || {\r\r\n /gns3/bin/busybox timeout 35 /gns3/bin/busybox httpd -f -p 10.10.20.10:8080 -h \r\r\n/root/dc-web-lab >/tmp/gns3-lab-http8080.log 2>&1 & echo \"PROBE_STARTED=$!\"; }; \r\r\n}\r\nPROBE_STARTED=4935\r\n/ # \r\n/ # \u001b[6n",
+  "dc_test": "curl --noproxy \"*\" -fsS --max-time 2 -o /dev/null -w \"DC_LOCAL_8080=%{http_c\r\r\node}\\n\" http://10.10.20.10:8080/\r\nDC_LOCAL_8080=200\r\n/ # \r\n/ # \u001b[6n",
+  "branch_test": "ip -4 route get 10.10.20.10; curl --noproxy \"*\" -fsS --max-time 5 -o /dev/nu\r\r\nll -w \"SUC_80=%{http_code}\\n\" http://10.10.20.10/; echo \"EXIT_80=$?\"; curl --nop\r\r\nroxy \"*\" -fsS --connect-timeout 3 --max-time 5 -o /dev/null -w \"SUC_8080=%{http_\r\r\ncode}\\n\" http://10.10.20.10:8080/; echo \"EXIT_8080=$?\"\r\n10.10.20.10 via 10.20.10.1 dev eth0  src 10.20.10.20 \r\nSUC_80=200\r\nEXIT_80=0\r\ncurl: (28) Failed to connect to 10.10.20.10 port 8080 after 3001 ms: Timeout was reached\r\nSUC_8080=000\r\nEXIT_8080=28\r\n/ # \r\n/ # \u001b[6n",
+  "allowed_pass": true,
+  "blocked_pass": true,
+  "cleanup": "if [ -r /proc/4935/cmdline ] && tr \"\\000\" \" \" < /proc/4935/cmdline | grep -F\r\r\nq \"10.10.20.10:8080\"; then kill 4935; fi; sleep 1; /gns3/bin/busybox netstat -ln\r\r\nt\r\nActive Internet connections (only servers)\r\nProto Recv-Q Send-Q Local Address           Foreign Address         State       \r\ntcp        0      0 10.10.20.10:80          0.0.0.0:*               LISTEN      \r\n[1]+  Terminated                 /gns3/bin/busybox timeout 35 /gns3/bin/busybox httpd -f -p 10.10.20.10:8080 -h /root/dc-web-lab 1>/tmp/gns3-lab-http8080.log 2>&1\r\n/ # \r\n/ # \u001b[6n"
+}

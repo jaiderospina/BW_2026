@@ -1,0 +1,7 @@
+auto eth0
+iface eth0 inet static
+    address 10.10.20.10
+    netmask 255.255.255.0
+    gateway 10.10.20.1
+    up echo nameserver 8.8.8.8 > /etc/resolv.conf
+    post-up /usr/bin/curl --noproxy '*' -fsS --max-time 2 http://10.10.20.10/ >/dev/null 2>&1 || /gns3/bin/busybox httpd -p 10.10.20.10:80 -h /root/dc-web-lab

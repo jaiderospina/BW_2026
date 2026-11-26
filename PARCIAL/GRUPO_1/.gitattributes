@@ -1,0 +1,4 @@
+# Preserve original evidence bytes and the Unix line endings of container files.
+* -text whitespace=cr-at-eol
+*.md whitespace=-blank-at-eol,cr-at-eol
+registros/*.txt whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
